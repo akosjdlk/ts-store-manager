@@ -18,4 +18,24 @@
   --color-dark_grey: #8E8E8E;
   --color-plus: #00C8B3;
   --color-dark_plus: #00A190;
+  --color-truck: #E3BC50;
+  --color-dark_truck: #B3933A;
+  --color-money: #76DD5C;
+  --color-dark_money: #62BE4B
+}
+
+.custom-datatable thead {
+  @apply text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-600 dark:text-gray-400;
+}
+
+.custom-datatable th {
+  @apply px-4 py-3;
+}
+
+.custom-datatable tbody tr {
+  @apply border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600;
+}
+
+.custom-datatable td {
+  @apply px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white;
 }

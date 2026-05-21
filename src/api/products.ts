@@ -11,6 +11,14 @@ export async function fetchFilteredProducts(filters: Record<string, string>): Pr
     return response.json() as Promise<Product[]>;
 }
 
+export async function fetchAllProducts(): Promise<Product[]> {
+    const response = await fetch(PRODUCTS_ENDPOINT);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch products`);
+    }
+    return response.json() as Promise<Product[]>;
+}
+
 export async function fetchProductById(id: string): Promise<Product> {
     const response = await fetch(`${PRODUCTS_ENDPOINT}/${id}`);
     if (!response.ok) {

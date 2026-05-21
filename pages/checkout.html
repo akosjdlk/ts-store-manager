@@ -1,249 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kassza</title>
     <link rel="stylesheet" href="/src/styles/style.css" />
 </head>
+
 <body class="bg-light_color dark:bg-dark_lighter_bg h-screen overflow-hidden">
-  <div class="bg-light_header dark:bg-dark_color dark:bg-dark_color-25 h-24 drop-shadow-lg flex flex-row items-center space-x-5 p-3 w-full">
-    <a href="index.html">
-      <div class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
-      </div>
-    </a>
-    <div id="dark-toggle" class="!ml-auto cursor-pointer p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-moon-icon lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
-    </div>
-  </div>
-  <div class="grid grid-cols-[100px_1fr]">
-    <div class="bg-dark_color w-24 pt-4 h-[calc(100vh-5rem)] flex flex-col items-center space-y-5 dark:bg-opacity-50">
-      <button class="bg-bread text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_bread">
-        <div class="rotate-45 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-croissant mt-1 ml-1">
-            <path d="M10.2 18H4.774a1.5 1.5 0 0 1-1.352-.97 11 11 0 0 1 .132-6.487"/><path d="M18 10.2V4.774a1.5 1.5 0 0 0-.97-1.352 11 11 0 0 0-6.486.132"/><path d="M18 5a4 3 0 0 1 4 3 2 2 0 0 1-2 2 10 10 0 0 0-5.139 1.42"/><path d="M5 18a3 4 0 0 0 3 4 2 2 0 0 0 2-2 10 10 0 0 1 1.42-5.14"/><path d="M8.709 2.554a10 10 0 0 0-6.155 6.155 1.5 1.5 0 0 0 .676 1.626l9.807 5.42a2 2 0 0 0 2.718-2.718l-5.42-9.807a1.5 1.5 0 0 0-1.626-.676"/>
-          </svg>
+    <div class="bg-light_header dark:bg-dark_color dark:bg-dark_color-25 h-24 drop-shadow-lg flex flex-row items-center space-x-5 p-3 w-full">
+        <a href="index.html">
+            <div
+                class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-log-out-icon lucide-log-out">
+                    <path d="m16 17 5-5-5-5" />
+                    <path d="M21 12H9" />
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                </svg>
+            </div>
+        </a>
+        <div id="dark-toggle"
+            class="!ml-auto cursor-pointer p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="w-14 h-14 lucide lucide-moon-icon lucide-moon">
+                <path
+                    d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+            </svg>
         </div>
-      </button>
-      <button class="bg-green-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-green-600">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-apple-icon lucide-apple"><path d="M12 6.528V3a1 1 0 0 1 1-1h0"/><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/></svg>
-      </button>
-      <button class="bg-cyan-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-cyan-600">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-bottle-wine-icon lucide-bottle-wine"><path d="M10 3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a6 6 0 0 0 1.2 3.6l.6.8A6 6 0 0 1 17 13v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-8a6 6 0 0 1 1.2-3.6l.6-.8A6 6 0 0 0 10 5z"/><path d="M17 13h-4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4"/></svg>
-      </button>
-      <button class="bg-darker_light text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_grey">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-      </button>
-      <button class="bg-red-400 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl !mt-auto transition duration-300 ease-in-out hover:bg-red-500">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-      </button>
-      <button class="bg-yellow-200 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl !mb-3 transition duration-300 ease-in-out hover:bg-yellow-400">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-      </button>
     </div>
-    <div class="relative overflow-x-auto shadow-xs rounded-xl bg-white border border-solid border-gray-500 ms-4 mt-4 me-4">
-      <table id="selection-table" class="w-full text-sm text-left bg-table_bg rtl:text-right text-body">
-          <thead id="table-head">
-              <tr>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Name
-                        <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                        </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Category
-                        <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                        </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Brand
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+    <div class="grid grid-cols-[100px_1fr]">
+        <div
+            class="bg-dark_color w-24 pt-4 h-[calc(100vh-6rem)] flex flex-col items-center space-y-5 dark:bg-opacity-50">
+            <button
+                class="bg-bread text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_bread">
+                <div class="rotate-45 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="w-14 h-14 lucide lucide-croissant mt-1 ml-1">
+                        <path d="M10.2 18H4.774a1.5 1.5 0 0 1-1.352-.97 11 11 0 0 1 .132-6.487" />
+                        <path d="M18 10.2V4.774a1.5 1.5 0 0 0-.97-1.352 11 11 0 0 0-6.486.132" />
+                        <path d="M18 5a4 3 0 0 1 4 3 2 2 0 0 1-2 2 10 10 0 0 0-5.139 1.42" />
+                        <path d="M5 18a3 4 0 0 0 3 4 2 2 0 0 0 2-2 10 10 0 0 1 1.42-5.14" />
+                        <path
+                            d="M8.709 2.554a10 10 0 0 0-6.155 6.155 1.5 1.5 0 0 0 .676 1.626l9.807 5.42a2 2 0 0 0 2.718-2.718l-5.42-9.807a1.5 1.5 0 0 0-1.626-.676" />
                     </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Price
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                    </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Stock
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                    </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Total Sales
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                    </svg>
-                        </span>
-                  </th>
-                  <th scope="col" class="px-6 py-3 font-medium">
-                        <span class="flex items-center">
-                            Status
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                    </svg>
-                        </span>
-                  </th scope="col" class="px-6 py-3 font-medium">
-              </tr>
-          </thead>
-          <tbody>
-              <tr class="odd:bg-dark_grey even:bg-grey-700">
-                  <td class="font-medium text-heading whitespace-nowrap">Apple iMac</td>
-                  <td>Computers</td>
-                  <td>Apple</td>
-                  <td>$1,299</td>
-                  <td>50</td>
-                  <td>200</td>
-                  <td>In Stock</td>
-              </tr>
-              <tr class="odd:bg-dark_grey even:bg-grey-700">
-                    <td class="font-medium text-heading whitespace-nowrap">Apple iPhone</td>
-                    <td>Mobile Phones</td>
-                    <td>Apple</td>
-                    <td>$999</td>
-                    <td>120</td>
-                    <td>300</td>
-                    <td>In Stock</td>
-              </tr>
-              <tr class="odd:bg-dark_grey even:bg-grey-700">
-                    <td class="font-medium text-heading whitespace-nowrap">Samsung Galaxy</td>
-                    <td>Mobile Phones</td>
-                    <td>Samsung</td>
-                    <td>$899</td>
-                    <td>80</td>
-                    <td>150</td>
-                    <td>In Stock</td>
-              </tr>
-              <tr class="odd:bg-dark_grey even:bg-grey-700">
-                    <td class="font-medium text-heading whitespace-nowrap">Dell XPS 13</td>
-                    <td>Computers</td>
-                    <td>Dell</td>
-                    <td>$1,099</td>
-                    <td>30</td>
-                    <td>120</td>
-                    <td>In Stock</td>
-              </tr>
-              <tr class="odd:bg-dark_grey even:bg-grey-700">
-                    <td class="font-medium text-heading whitespace-nowrap">HP Spectre x360</td>
-                    <td>Computers</td>
-                    <td>HP</td>
-                    <td>$1,299</td>
-                    <td>25</td>
-                    <td>80</td>
-                    <td>In Stock</td>
-              </tr>
-          </tbody>
-      </table>
+                </div>
+            </button>
+            <button
+                class="bg-green-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-apple-icon lucide-apple">
+                    <path d="M12 6.528V3a1 1 0 0 1 1-1h0" />
+                    <path
+                        d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" />
+                </svg>
+            </button>
+            <button
+                class="bg-cyan-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-cyan-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-bottle-wine-icon lucide-bottle-wine">
+                    <path
+                        d="M10 3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a6 6 0 0 0 1.2 3.6l.6.8A6 6 0 0 1 17 13v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-8a6 6 0 0 1 1.2-3.6l.6-.8A6 6 0 0 0 10 5z" />
+                    <path d="M17 13h-4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4" />
+                </svg>
+            </button>
+            <button
+                class="bg-darker_light text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_grey">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-search-icon lucide-search">
+                    <path d="m21 21-4.34-4.34" />
+                    <circle cx="11" cy="11" r="8" />
+                </svg>
+            </button>
+            <button
+                class="bg-red-400 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl !mt-auto transition duration-300 ease-in-out hover:bg-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-trash2-icon lucide-trash-2">
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                    <path d="M3 6h18" />
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+            </button>
+            <button
+                class="bg-yellow-200 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl !mb-3 transition duration-300 ease-in-out hover:bg-yellow-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="w-14 h-14 lucide lucide-pencil-icon lucide-pencil">
+                    <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                    <path d="m15 5 4 4" />
+                </svg>
+            </button>
+        </div>
+        <div
+            class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
+            <table id="selection-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">
+            </table>
+        </div>
     </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
-  <script>
-    const toggle = document.getElementById('dark-toggle');
-    const root = document.documentElement;
-    if (localStorage.getItem('theme') === 'dark') {
-      root.classList.add('dark');
-    }
-
-    toggle.addEventListener('click', () => {
-      root.classList.toggle('dark');
-      
-      if (root.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-      } else {
-        localStorage.setItem('theme', 'light');
-      }
-    });
-
-    
-  
-    
-if (document.getElementById("selection-table") && typeof simpleDatatables.DataTable !== 'undefined') {
-
-    let multiSelect = true;
-    let rowNavigation = false;
-    let table = null;
-
-    const resetTable = function() {
-        if (table) {
-            table.destroy();
-        }
-
-        const options = {
-            rowRender: (row, tr, _index) => {
-                if (!tr.attributes) {
-                    tr.attributes = {};
-                }
-                if (!tr.attributes.class) {
-                    tr.attributes.class = "";
-                }
-                if (row.selected) {
-                    tr.attributes.class += " selected";
-                } else {
-                    tr.attributes.class = tr.attributes.class.replace(" selected", "");
-                }
-                return tr;
-            }
-        };
-        if (rowNavigation) {
-            options.rowNavigation = true;
-            options.tabIndex = 1;
-        }
-
-        table = new simpleDatatables.DataTable("#selection-table", options);
-
-        // Mark all rows as unselected
-        table.data.data.forEach(data => {
-            data.selected = false;
-        });
-
-        table.on("datatable.selectrow", (rowIndex, event) => {
-            event.preventDefault();
-            const row = table.data.data[rowIndex];
-            if (row.selected) {
-                row.selected = false;
-            } else {
-                if (!multiSelect) {
-                    table.data.data.forEach(data => {
-                        data.selected = false;
-                    });
-                }
-                row.selected = true;
-            }
-            table.update();
-        });
-    };
-
-    // Row navigation makes no sense on mobile, so we deactivate it and hide the checkbox.
-    const isMobile = window.matchMedia("(any-pointer:coarse)").matches;
-    if (isMobile) {
-        rowNavigation = false;
-    }
-
-    resetTable();
-}
-
-
-
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    <script type="module">
+        import { darkMode } from "../src/main.ts"
+        darkMode()
+    </script>
+    <script type="module" src="../src/components/checkout.ts"></script>
 </body>
+
 </html>

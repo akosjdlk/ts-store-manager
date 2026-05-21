@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run lint && concurrently \"vite --port 8000\" \"npm run json-server\"",
+    "dev-nolint": "concurrently \"vite --port 8000\" \"npm run json-server\"",
     "migrate-db": "copy /y db.json db.local.json",
     "migrate-db-unix": "cp db.json db.local.json",
     "json-server": "npx json-server db.local.json --port 8080",
