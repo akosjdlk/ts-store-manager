@@ -4,14 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite --port 8000\" \"npm run json-server\"",
+    "dev": "npm run lint && concurrently \"vite --port 8000\" \"npm run json-server\"",
     "migrate-db": "rm -f db.local.json && cp db.json db.local.json",
     "json-server": "npx json-server db.local.json --port 8080",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "concurrently": "^9.2.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-sonarjs": "^4.0.3",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "prettier": "^3.8.3",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.59.4",
     "vite": "^8.0.0-beta.13"
   }
 }
