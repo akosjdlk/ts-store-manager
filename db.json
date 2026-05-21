@@ -1,5 +1,5 @@
 {
-    "termekek": [
+    "products": [
         {
             "id": "5991111111001",
             "cikkszam": "CK-001",
@@ -5500,5 +5500,6 @@
             "brutto_ar": 350,
             "afa": 5
         }
-    ]
+    ],
+    "sales": []
 }
