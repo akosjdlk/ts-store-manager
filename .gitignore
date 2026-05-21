@@ -14,6 +14,7 @@ dist-ssr
 node_modules/
 dist/
 db.local.json
+package-lock.json
 
 # Editor directories and files
 .vscode/*
