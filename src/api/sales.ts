@@ -1,6 +1,6 @@
 import type { Sale } from "../types/sale";
 
-const SALES_ENDPOINT = "/api/sales";
+const SALES_ENDPOINT = "http://localhost:8080/sales";
 
 export async function fetchFilteredSales(filters: Record<string, string>): Promise<Sale[]> {
     const queryString = new URLSearchParams(filters).toString();

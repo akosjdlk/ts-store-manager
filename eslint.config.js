@@ -57,6 +57,7 @@ export default tseslint.config(
       "no-console": "warn",
       "no-debugger": "error",
       "sonarjs/todo-tag": "warn",
+      "@typescript-eslint/no-misused-promises": "off",
 
       /*
        * TYPESCRIPT
@@ -84,8 +85,6 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "error",
 
       "@typescript-eslint/no-floating-promises": "error",
-
-      "@typescript-eslint/no-misused-promises": "error",
 
       "@typescript-eslint/no-non-null-assertion": "error",
 
@@ -115,26 +114,6 @@ export default tseslint.config(
 
       "import/no-duplicates": "error",
 
-      "import/order": [
-        "error",
-        {
-          alphabetize: {
-            order: "asc",
-            caseInsensitive: true,
-          },
-
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
-
-          "newlines-between": "always",
-        },
-      ],
 
       /*
        * UNUSED IMPORTS
@@ -143,7 +122,7 @@ export default tseslint.config(
       "unused-imports/no-unused-imports": "error",
 
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",

@@ -1,6 +1,6 @@
 import type { Product } from "../types/product";
 
-const PRODUCTS_ENDPOINT = "/api/products";
+const PRODUCTS_ENDPOINT = "http://localhost:8080/products";
 
 export async function fetchFilteredProducts(filters: Record<string, string>): Promise<Product[]> {
     const queryString = new URLSearchParams(filters).toString();
