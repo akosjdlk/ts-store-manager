@@ -13,5 +13,8 @@
     "concurrently": "^9.2.1",
     "typescript": "~5.9.3",
     "vite": "^8.0.0-beta.13"
+  },
+  "dependencies": {
+    "simple-datatables": "^10.2.0"
   }
 }
