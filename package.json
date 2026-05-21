@@ -1,0 +1,17 @@
+{
+  "name": "ts-store-manager",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite --port 8000\" \"npm run json-server\"",
+    "migrate-db": "rm -f db.local.json && cp db.json db.local.json",
+    "json-server": "npx json-server db.local.json --port 8080",
+    "build": "tsc && vite build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.0-beta.13"
+  }
+}
