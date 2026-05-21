@@ -4,30 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charts</title>
-    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              dark_color: '#343C4A',     
-              darker: '#242A35',
-              dark_lighter_bg: '#6C6C6C',
-              light_header: '#F8F8F8',
-              light_color: '#D9D9D9',
-              darker_light: '#9E9E9E',
-              dark_grey: '#8E8E8E',
-              truck: '#E3BC50',
-              dark_truck: '#B3933A',
-              money: '#76DD5C',
-              dark_money: '#62BE4B'
-            }
-          }
-        }
-      }
-    </script>
+    <link rel="stylesheet" href="/src/styles/style.css" />
 </head>
 <body class="bg-light_color dark:bg-dark_lighter_bg h-screen overflow-hidden">
     <div class="bg-light_header dark:bg-dark_color dark:bg-dark_color-25 h-24 drop-shadow-lg flex flex-row items-center space-x-5 p-3 w-full">
@@ -51,7 +28,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-package-icon lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
         </button>
       </a>
-      <a href="eladasok.html">
+      <a href="sales.html">
         <button class="bg-money text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_money">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-banknote-arrow-up-icon lucide-banknote-arrow-up"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="M18 12h.01"/><path d="M19 22v-6"/><path d="m22 19-3-3-3 3"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>
         </button>
