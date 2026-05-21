@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              dark_color: "#343C4A",
+              darker: "#242A35",
+              dark_lighter_bg: "#6C6C6C",
+              light_header: "#F8F8F8",
+              light_color: "#D9D9D9",
+              darker_light: "#9E9E9E",
+              bread: "#DDAB5A",
+              dark_bread: "#B48842",
+              dark_grey: "#8E8E8E",
+              plus: "#00C8B3",
+              dark_plus: "#00A190",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-light_color dark:bg-dark_lighter_bg">
+    <div
+      class="bg-light_header dark:bg-dark_color h-24 drop-shadow-lg flex flex-row items-center p-3 w-full relative"
+    >
+      <div class="hidden md:flex flex-row items-center space-x-5">
+        <a href="raktar_charts.html">
+          <div
+            class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-14 h-14 lucide lucide-house-icon lucide-house"
+            >
+              <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+              <path
+                d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+              />
+            </svg>
+          </div>
+        </a>
+        <a href="index.html">
+          <div
+            class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-14 h-14 lucide lucide-log-out-icon lucide-log-out"
+            >
+              <path d="m16 17 5-5-5-5" />
+              <path d="M21 12H9" />
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            </svg>
+          </div>
+        </a>
+        <button
+          class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-14 h-14 lucide lucide-settings-icon lucide-settings"
+          >
+            <path
+              d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex md:hidden relative">
+        <button
+          id="menu-button"
+          class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full focus:outline-none hover:bg-darker hover:dark:bg-darker_light"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-14 h-14 lucide lucide-menu-icon lucide-menu"
+          >
+            <path d="M4 5h16" />
+            <path d="M4 12h16" />
+            <path d="M4 19h16" />
+          </svg>
+        </button>
+
+        <div
+          id="dropdown-menu"
+          class="hidden absolute left-0 top-14 bg-light_header dark:bg-dark_color border border-light_color dark:border-darker rounded-xl shadow-xl p-3 flex flex-col space-y-3 z-50 min-w-[180px]"
+        >
+          <a
+            href="raktar_charts.html"
+            class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+              <path
+                d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Főoldal</span>
+          </a>
+          <a
+            href="index.html"
+            class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path d="m16 17 5-5-5-5" />
+              <path d="M21 12H9" />
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            </svg>
+            <span class="font-medium text-sm">Kijelentkezés</span>
+          </a>
+          <button
+            class="flex items-center space-x-3 p-2 w-full hover:bg-light_color hover:dark:bg-darker rounded-lg text-left text-dark_color dark:text-light_color"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path
+                d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span class="font-medium text-sm">Beállítások</span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="dark-toggle"
+        class="!ml-auto cursor-pointer p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-14 h-14 lucide lucide-moon-icon lucide-moon"
+        >
+          <path
+            d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <script>
+      const toggle = document.getElementById("dark-toggle");
+      const root = document.documentElement;
+      if (localStorage.getItem("theme") === "dark") {
+        root.classList.add("dark");
+      }
+
+      toggle.addEventListener("click", () => {
+        root.classList.toggle("dark");
+
+        if (root.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      });
+
+      const menuButton = document.getElementById("menu-button");
+      const dropdownMenu = document.getElementById("dropdown-menu");
+
+      menuButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", () => {
+        dropdownMenu.classList.add("hidden");
+      });
+    </script>
+  </body>
+</html>

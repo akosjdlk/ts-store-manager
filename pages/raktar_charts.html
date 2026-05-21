@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charts</title>
+    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              dark_color: '#343C4A',     
+              darker: '#242A35',
+              dark_lighter_bg: '#6C6C6C',
+              light_header: '#F8F8F8',
+              light_color: '#D9D9D9',
+              darker_light: '#9E9E9E',
+              dark_grey: '#8E8E8E',
+              truck: '#E3BC50',
+              dark_truck: '#B3933A',
+              money: '#76DD5C',
+              dark_money: '#62BE4B'
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-light_color dark:bg-dark_lighter_bg h-screen overflow-hidden">
+    <div class="bg-light_header dark:bg-dark_color dark:bg-dark_color-25 h-24 drop-shadow-lg flex flex-row items-center space-x-5 p-3 w-full">
+        <a href="index.html">
+            <div class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+            </div>
+        </a>
+        <div id="dark-toggle" class="!ml-auto cursor-pointer p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-moon-icon lucide-moon"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+        </div>
+    </div>
+    <div class="bg-dark_color w-24 pt-4 h-[calc(100vh-6rem)] flex flex-col items-center space-y-5 dark:bg-opacity-50">
+      <a href="bevetelezes.html">
+        <button class="bg-truck text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_truck">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-truck-icon lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+        </button>
+      </a>
+      <a href="raktar_nyilvantartas.html">
+        <button class="bg-darker_light text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_grey">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-package-icon lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+        </button>
+      </a>
+      <a href="eladasok.html">
+        <button class="bg-money text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_money">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-banknote-arrow-up-icon lucide-banknote-arrow-up"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="M18 12h.01"/><path d="M19 22v-6"/><path d="m22 19-3-3-3 3"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>
+        </button>
+      </a>
+    </div>
+    <div class="charts">
+        <div class="daily-sail">
+
+        </div>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('dark-toggle');
+        const root = document.documentElement;
+        if (localStorage.getItem('theme') === 'dark') {
+          root.classList.add('dark');
+        }
+
+        toggle.addEventListener('click', () => {
+          root.classList.toggle('dark');
+        
+          if (root.classList.contains('dark')) {
+            localStorage.setItem('theme', 'dark');
+          } else {
+            localStorage.setItem('theme', 'light');
+          }
+        });
+    </script>
+</body>
+</html>

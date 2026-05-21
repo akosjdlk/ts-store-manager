@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=point_of_sale"
+    />
+    <link
+      href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              dark_color: "#343C4A",
+              darker: "#242A35",
+              light_color: "#D9D9D9",
+              darker_light: "#9E9E9E",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-light_color dark:bg-dark_color">
+    <div
+      id="dark-toggle"
+      class="p-2 cursor-pointer absolute top-2 right-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="50"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="w-14 h-14 lucide lucide-moon-icon lucide-moon"
+      >
+        <path
+          d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+        />
+      </svg>
+    </div>
+    <div
+      class="flex flex-row items-center justify-center min-h-screen gap-10 text-center"
+    >
+      <div class="hidden md:flex flex-row items-center space-x-5">
+        <a href="raktar_charts.html">
+          <div
+            class="transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-darker hover:dark:bg-darker_light drop-shadow-lg w-96 bg-dark_color rounded-xl h-96 dark:bg-light_color flex flex-col gap-2 justify-center"
+          >
+            <svg
+              class="text-light_color dark:text-dark_color"
+              xmlns="http://www.w3.org/2000/svg"
+              height="230"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-archive-icon lucide-archive"
+            >
+              <rect width="20" height="5" x="2" y="3" rx="1" />
+              <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+              <path d="M10 12h4" />
+            </svg>
+            <p
+              class="text-4xl pb-4 font-bold text-light_color dark:text-dark_color"
+            >
+              RAKTÁR
+            </p>
+          </div>
+        </a>
+        <a href="kassza.html">
+          <div
+            class="transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-darker hover:dark:bg-darker_light drop-shadow-lg w-96 bg-dark_color rounded-xl h-96 dark:bg-light_color flex flex-col gap-2 justify-center"
+          >
+            <span
+              class="material-symbols-outlined text-[230px] text-light_color dark:text-dark_color"
+            >
+              point_of_sale
+            </span>
+            <p
+              class="text-4xl pb-4 font-bold text-light_color dark:text-dark_color"
+            >
+              KASSZA
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <div class="flex md:hidden relative flex flex-col gap-5">
+        <a href="raktar_charts.html">
+          <div
+            class="transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-darker hover:dark:bg-darker_light drop-shadow-lg w-64 bg-dark_color rounded-xl h-64 dark:bg-light_color flex flex-col gap-2 justify-center"
+          >
+            <svg
+              class="text-light_color dark:text-dark_color"
+              xmlns="http://www.w3.org/2000/svg"
+              height="150"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-archive-icon lucide-archive"
+            >
+              <rect width="20" height="5" x="2" y="3" rx="1" />
+              <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+              <path d="M10 12h4" />
+            </svg>
+            <p
+              class="text-4xl pb-4 font-bold text-light_color dark:text-dark_color"
+            >
+              RAKTÁR
+            </p>
+          </div>
+        </a>
+        <a href="kassza.html">
+          <div
+            class="transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-darker hover:dark:bg-darker_light drop-shadow-lg w-64 bg-dark_color rounded-xl h-64 dark:bg-light_color flex flex-col gap-2 justify-center"
+          >
+            <span
+              class="material-symbols-outlined text-[150px] text-light_color dark:text-dark_color"
+            >
+              point_of_sale
+            </span>
+            <p
+              class="text-4xl pb-4 font-bold text-light_color dark:text-dark_color"
+            >
+              KASSZA
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      const toggle = document.getElementById("dark-toggle");
+      const root = document.documentElement;
+
+      if (localStorage.getItem("theme") === "dark") {
+        root.classList.add("dark");
+      }
+
+      toggle.addEventListener("click", () => {
+        root.classList.toggle("dark");
+
+        if (root.classList.contains("dark")) {
+          localStorage.setItem("theme", "dark");
+        } else {
+          localStorage.setItem("theme", "light");
+        }
+      });
+    </script>
+  </body>
+</html>
