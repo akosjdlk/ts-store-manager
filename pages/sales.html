@@ -4,21 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link
-      href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              dark_color: "#343C4A",
-              darker: "#242A35",
-              dark_lighter_bg: "#6C6C6C",
-                <link rel="stylesheet" href="/src/styles/style.css" />
+    <link rel="stylesheet" href="/src/styles/style.css" />
+  </head>
+
+  <body class="bg-light_color dark:bg-dark_lighter_bg">
+    <div
+      class="bg-light_header dark:bg-dark_color h-24 drop-shadow-lg flex flex-row items-center p-3 w-full relative"
+    >
+      <div class="hidden md:flex flex-row items-center space-x-5">
+        <a href="raktar_charts.html">
+          <div
+            class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
