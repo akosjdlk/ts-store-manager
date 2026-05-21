@@ -5,7 +5,7 @@ const ERROR_POPUP_TEMPLATE = `
 </div>
 `;
 
-function logError(error: Error | string): void {
+export function logError(error: Error | string): void {
   const message = typeof error === "string" ? error : error.message;
 
   console.error(`[${new Date().toISOString()}] ERROR: ${message}`)  // eslint-disable-line no-console
@@ -18,5 +18,3 @@ function logError(error: Error | string): void {
     document.body.removeChild(alert);
   }, 3000)
 }
-
-logError("This is a test error message");
