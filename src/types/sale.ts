@@ -2,9 +2,9 @@
 export interface Sale {
     id: string;
     date: string;
-    products: {
+    products: Array<{
         productId: string;
         quantity: number;
-    }[];
+    }>;
     bruttoOsszeg: number;
 }
