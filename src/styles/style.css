@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-dark_color: #343C4A;
+  --color-darker: #242A35;
+  --color-dark_lighter_bg: #6C6C6C;
+  --color-light_header: #F8F8F8;
+  --color-light_color: #D9D9D9;
+  --color-darker_light: #9E9E9E;
+  --color-bread: #DDAB5A;
+  --color-dark_bread: #B48842;
+  --color-dark_grey: #8E8E8E;
+  --color-plus: #00C8B3;
+  --color-dark_plus: #00A190;
+}
