@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run lint && concurrently \"vite --port 8000\" \"npm run json-server\"",
-    "dev-nolint": "concurrently \"vite --port 8000\" \"npm run json-server\"",
+    "dev": "concurrently \"npm run vite\" \"npm run json-server\"",
+    "dev-lint": "npm run lint && npm run dev",
     "migrate-db": "copy /y db.json db.local.json",
     "migrate-db-unix": "cp db.json db.local.json",
-    "json-server": "npx json-server db.local.json --port 8080",
+    "json-server": "npx json-server db.local.json --port 8080 --host 0.0.0.0",
+    "vite": "vite --port 8000 --host",
     "build": "tsc && vite build",
     "lint": "eslint . --fix"
   },
