@@ -7,14 +7,10 @@
       <link rel="stylesheet" href="/src/styles/style.css" />
   </head>
   <body class="bg-light_color dark:bg-dark_lighter_bg">
-    <div
-      class="bg-light_header dark:bg-dark_color h-24 drop-shadow-lg flex flex-row items-center p-3 w-full relative"
-    >
+    <div class="bg-light_header dark:bg-dark_color h-24 z-50 drop-shadow-lg flex flex-row items-center p-3 w-full relative">
       <div class="hidden md:flex flex-row items-center space-x-5">
         <a href="raktar_charts.html">
-          <div
-            class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
-          >
+          <div class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -90,7 +86,7 @@
         </button>
       </div>
 
-      <div class="flex md:hidden relative">
+      <div class="flex md:hidden relative z-[100]">
         <button
           id="menu-button"
           class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full focus:outline-none hover:bg-darker hover:dark:bg-darker_light"
@@ -113,7 +109,7 @@
 
         <div
           id="dropdown-menu"
-          class="hidden absolute left-0 top-14 bg-light_header dark:bg-dark_color border border-light_color dark:border-darker rounded-xl shadow-xl p-3 flex flex-col space-y-3 z-50 min-w-[180px]"
+          class="hidden absolute z-[110] left-0 top-14 bg-light_header dark:bg-dark_color border border-light_color dark:border-darker rounded-xl shadow-xl p-3 flex flex-col space-y-3 min-w-[180px]"
         >
           <a
             href="raktar_charts.html"
@@ -218,45 +214,17 @@
       </div>
     </div>
 
-    <div class="table">
-      <table>
-        <thead>
-          <th></th>
-        </thead>
-        <tbody>
-          <tr></tr>
-        </tbody>
+    <div
+      class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
+      <table id="selection-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">
       </table>
     </div>
 
-    <script>
-      const toggle = document.getElementById("dark-toggle");
-      const root = document.documentElement;
-      if (localStorage.getItem("theme") === "dark") {
-        root.classList.add("dark");
-      }
-
-      toggle.addEventListener("click", () => {
-        root.classList.toggle("dark");
-
-        if (root.classList.contains("dark")) {
-          localStorage.setItem("theme", "dark");
-        } else {
-          localStorage.setItem("theme", "light");
-        }
-      });
-
-      const menuButton = document.getElementById("menu-button");
-      const dropdownMenu = document.getElementById("dropdown-menu");
-
-      menuButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle("hidden");
-      });
-
-      document.addEventListener("click", () => {
-        dropdownMenu.classList.add("hidden");
-      });
+    <script type="module">
+      import { darkMode, mobileView } from "../src/main.ts";
+      darkMode();
+      mobileView();
     </script>
+    <script type="module" src="../src/components/backend_data.ts"></script>
   </body>
 </html>

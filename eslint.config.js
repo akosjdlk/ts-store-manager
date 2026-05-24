@@ -58,6 +58,7 @@ export default tseslint.config(
       "no-debugger": "error",
       "sonarjs/todo-tag": "warn",
       "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
 
       /*
        * TYPESCRIPT

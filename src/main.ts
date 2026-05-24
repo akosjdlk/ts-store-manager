@@ -18,3 +18,34 @@ export function logError(error: Error | string): void {
     document.body.removeChild(alert);
   }, 3000)
 }
+
+export function darkMode() {
+  const toggle = document.getElementById('dark-toggle');
+  const root = document.documentElement;
+  if (localStorage.getItem('theme') === 'dark') {
+    root.classList.add('dark');
+  }
+
+  toggle?.addEventListener('click', () => {
+    root.classList.toggle('dark');
+    if (root.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+  });
+}
+
+export function mobileView() {
+  const menuButton = document.getElementById("menu-button");
+  const dropdownMenu = document.getElementById("dropdown-menu");
+  
+  menuButton?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdownMenu?.classList.toggle("hidden");
+  });
+  
+  document.addEventListener("click", () => {
+    dropdownMenu?.classList.add("hidden");
+  });
+}

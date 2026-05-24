@@ -1,12 +1,20 @@
 import type { Product } from "../types/product";
 
-const PRODUCTS_ENDPOINT = "http://localhost:8080/products";
+const PRODUCTS_ENDPOINT = "/api/products";
 
 export async function fetchFilteredProducts(filters: Record<string, string>): Promise<Product[]> {
     const queryString = new URLSearchParams(filters).toString();
     const response = await fetch(`${PRODUCTS_ENDPOINT}?${queryString}`);
     if (!response.ok) {
         throw new Error("Failed to fetch products");
+    }
+    return response.json() as Promise<Product[]>;
+}
+
+export async function fetchAllProducts(): Promise<Product[]> {
+    const response = await fetch(PRODUCTS_ENDPOINT);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch products`);
     }
     return response.json() as Promise<Product[]>;
 }
