@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
-
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
 
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
@@ -25,17 +25,67 @@
 }
 
 .custom-datatable thead {
-  @apply text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-600 dark:text-gray-400;
+  @apply text-sm;
 }
 
 .custom-datatable th {
-  @apply px-4 py-3;
+  @apply px-4 py-4 text-gray-700 uppercase;
+}
+
+.custom-datatable thead th {
+  @apply bg-gray-300 dark:bg-gray-600 dark:text-gray-400;
 }
 
 .custom-datatable tbody tr {
-  @apply border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600;
+  @apply border-b dark:border-gray-700 hover:bg-gray-200 transition duration-500 dark:hover:bg-gray-600;
 }
 
 .custom-datatable td {
   @apply px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white;
+}
+
+.custom-datatable {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.custom-datatable thead th:first-child {
+  @apply rounded-tl-lg rounded-bl-lg;
+}
+
+.custom-datatable thead th:last-child {
+  @apply rounded-tr-lg rounded-br-lg;
+}
+
+.custom-datatable tbody tr td:first-child {
+  @apply rounded-tl-full rounded-bl-full;
+}
+
+.custom-datatable tbody tr td:last-child {
+  @apply rounded-tr-full rounded-br-full;
+}
+
+.datatable-search .datatable-input {
+  @apply rounded-full bg-gray-200/80 w-64 p-3 m-3 hover:bg-gray-200 border-none hover:bg-gray-200;
+}
+
+.datatable-sorter {
+  @apply uppercase;
+}
+
+.custom-datatable thead th {
+  border: 0;
+  background-clip: padding-box;
+}
+
+body {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input {
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }

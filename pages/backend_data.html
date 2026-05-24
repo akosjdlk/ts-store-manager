@@ -48,7 +48,7 @@
             </svg>
           </div>
         </a>
-        <button
+        <button id="dropdownDefaultButton" data-dropdown-trigger="click" data-dropdown-toggle="dropdownCustomID"
           class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light"
         >
           <svg
@@ -214,6 +214,12 @@
       </div>
     </div>
 
+    <div id="dropdownCustomID" class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
+      <ul id="backend_data_table_dropdown" class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownDefaultButton">
+       
+      </ul>
+    </div>
+    
     <div
       class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
       <table id="selection-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">

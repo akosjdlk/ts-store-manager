@@ -1,32 +1,32 @@
-import { DataTable } from "simple-datatables"
+import { DataTable } from "simple-datatables";
+import type { Product } from "../types/product";
+import { fetchAllProducts } from "../api/products";
+import "flowbite"
 
 // const table_body = document.getElementById('table-body');
 // const table_head = document.getElementById('table-head');
-
+var table_settings: Record<string, boolean> = JSON.parse(localStorage.getItem("backend_data_dropdown_settings") ?? "{}");
 
 async function render(): Promise<void> {
-    // table_body!.innerHTML = '';
-    // table_head!.innerHTML = '';
-    // const tr = document.createElement('tr');
-    // termekek.forEach(t => {
-    //     tr.innerHTML = `
-    //     <td>${t.id}</td>
-    //     <td>${t.cikkszam}</td>
-    //     <td>${t.kategoria}</td>
-    //     <td>${t.termek_nev}</td>
-    //     <td>${t.keszlet.toLocaleString()}</td>
-    //     <td>${t.mertekegyseg}</td>
-    //     <td>${t.netto_ar.toLocaleString()}</td>
-    //     <td>${t.brutto_ar.toLocaleString()}</td>
-    //     <td>${t.afa.toLocaleString()}</td>
-    //     `
-    // });
+
+    const products = await fetchAllProducts()
+    dropdown(products[0]!)
+
+    const headings = Object.entries(table_settings).filter(k => k[1]).flatMap(e => e[0])
+
+    /**
+     * input: Sale || Product, headings: string[]
+     * return: Array<Sale || Product value, de csak az adott headingek-re>
+     * 
+     * const input: Sale | Product = ...
+     * const data = []
+     * heading foreach k =>  {
+     *     data.append(input[k])
+     * }
+     */
+
     const data = {
-        "headings": [
-            "Name",
-            "Company",
-            "Date",
-        ],
+        "headings": headings.flatMap(v => v.replaceAll("_", " ")),
         "data": [
             [
                 "Flowbite",
@@ -40,7 +40,8 @@ async function render(): Promise<void> {
             ]
         ]
     };
-    const t = new DataTable('#selection-table', { data: data,
+    new DataTable('#selection-table', { data: data,
+        paging: false, 
         classes: {
         wrapper: "p-4 bg-white dark:bg-dark_color shadow-md sm:rounded-lg",
         
@@ -60,8 +61,42 @@ async function render(): Promise<void> {
         pagination: "inline-flex items-stretch",
     }
     })
-    t.init()
     console.log("asd")
+}
+
+const table_dropdown = document.getElementById('backend_data_table_dropdown') as HTMLUListElement
+
+async function dropdown(product: Product) {
+
+    var keys = Object.keys(table_settings);
+    if (keys.length === 0) {
+        keys = Object.keys(product);
+    }
+
+    keys.forEach(k => {
+        table_dropdown.innerHTML += `
+        <li class="m-1 p-1 odd:bg-gray-100 dark:odd:bg-gray-900 flex flex-row justify-center items-center gap-2 rounded-lg">
+            <input type="checkbox" class="rounded-lg product-dd" name="${k}" id="${k}" ${(table_settings[k] ?? true) ? "checked" : ""}>
+            <label class="!w-full" for="${k}">${k.toUpperCase()}</label>
+        </li>
+        `;
+
+        table_dropdown.addEventListener('change', (event) => {
+        const target = event.target as HTMLInputElement;
+        
+            if (target && target.classList.contains('product-dd')) {
+                const allBoxes = Array.from(table_dropdown.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>)
+                const options: Record<string, boolean> = Object.fromEntries(allBoxes.map(e => [e.id, e.checked]));
+                
+
+                if (!Object.values(options).some(c => c)) {
+                    target.checked = true;
+                }
+                table_settings = options;
+                localStorage.setItem("backend_data_dropdown_settings", JSON.stringify(table_settings));
+            }
+        });
+    });
 }
 
 render();
