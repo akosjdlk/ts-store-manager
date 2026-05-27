@@ -10,3 +10,7 @@ export interface Product {
   brutto_ar: number;
   afa: number;
 }
+
+export function isProduct(p: any): p is Product {
+  return (<Product>p).cikkszam !== undefined;
+}

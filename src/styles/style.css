@@ -24,24 +24,43 @@
   --color-dark_money: #62BE4B
 }
 
+.datatable-pagination ul {
+  @apply flex items-center space-x-1 list-none p-0 m-0;
+}
+
+.datatable-pagination li,
+.datatable-pagination a,
+.datatable-pagination button {
+  @apply inline-flex items-center justify-center px-2 py-1 text-sm font-medium text-gray-500 rounded-md cursor-pointer;
+}
+
+.datatable-pagination .active a,
+.datatable-pagination .datatable-active a {
+  @apply bg-blue-600 text-white border-blue-600 dark:bg-blue-500 dark:text-white;
+}
+
+.datatable-search {
+  @apply w-2/3;
+}
+
+.datatable-search .datatable-input {
+  @apply bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2 dark:bg-gray-600 border-none dark:placeholder-gray-400 dark:text-white;
+}
+
 .custom-datatable thead {
   @apply text-sm;
 }
 
 .custom-datatable th {
-  @apply px-4 py-4 text-gray-700 uppercase;
-}
-
-.custom-datatable thead th {
-  @apply bg-gray-300 dark:bg-gray-600 dark:text-gray-400;
+  @apply px-4 py-4 bg-gray-300 dark:bg-gray-600 dark:text-gray-300 text-gray-700 uppercase text-center text-nowrap;
 }
 
 .custom-datatable tbody tr {
-  @apply border-b dark:border-gray-700 hover:bg-gray-200 transition duration-500 dark:hover:bg-gray-600;
+  @apply border-b dark:border-gray-700 dark:even:bg-gray-800/50 even:bg-gray-100 hover:bg-gray-200 transition duration-500 dark:hover:bg-gray-600;
 }
 
 .custom-datatable td {
-  @apply px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white;
+  @apply px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center;
 }
 
 .custom-datatable {
@@ -63,10 +82,6 @@
 
 .custom-datatable tbody tr td:last-child {
   @apply rounded-tr-full rounded-br-full;
-}
-
-.datatable-search .datatable-input {
-  @apply rounded-full bg-gray-200/80 w-64 p-3 m-3 hover:bg-gray-200 border-none hover:bg-gray-200;
 }
 
 .datatable-sorter {

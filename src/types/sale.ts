@@ -7,4 +7,4 @@ export interface Sale {
         quantity: number;
     }>;
     bruttoOsszeg: number;
-}
+ }
