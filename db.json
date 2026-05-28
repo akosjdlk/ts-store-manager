@@ -5501,5 +5501,15 @@
             "afa": 5
         }
     ],
-    "sales": []
+    "sales": [
+        {
+            "id": "1",
+            "date": "2026-05-35",
+            "products": {
+                "productId":  "5991111111008",
+                "quantity": 2
+            },
+            "bruttoOsszeg": 4300
+        }
+    ]
 }
