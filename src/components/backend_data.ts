@@ -3,7 +3,7 @@ import { fetchAllProducts } from "../api/products";
 import type { Product } from "../types/product";
 import "flowbite";
 
-async function main() {
+async function main(): Promise<void> {
     const products = await fetchAllProducts();
     const table = document.querySelector('table')!;
     const p = products[0]!;

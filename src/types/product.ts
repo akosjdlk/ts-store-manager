@@ -5,12 +5,14 @@ export interface Product {
   kategoria: string;
   termek_nev: string;
   keszlet: number;
-  mertekegyseg: string; // todo: enum
+  mertekegyseg: string; // TODO: enum
   netto_ar: number;
   brutto_ar: number;
   afa: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isProduct(p: any): p is Product {
-  return (<Product>p).cikkszam !== undefined;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison
+  return (p as Product).cikkszam !== undefined;
 }

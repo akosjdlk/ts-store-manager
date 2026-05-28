@@ -5,20 +5,20 @@ import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 
 type Cell = string | number | boolean;
-type CellRow = Array<Cell>;
+type CellRow = Cell[];
 
 interface DataTableConfig {
     dataTable: DataTable;
-    storedData: Array<CellRow>;
+    storedData: CellRow[];
 }
 
 type DropdownData = Record<string, boolean>;
 
 const dataTables = new Map<string, DataTableConfig>();
 
-function getValues<T extends Product | Sale, K extends keyof T>(
+function getValues<T extends Product | Sale>(
     input: T,
-    keys: Array<K>,
+    keys: Array<keyof T>,
     deleteButton: boolean,
     modifyButton: boolean
 ): CellRow {
@@ -35,14 +35,14 @@ function getValues<T extends Product | Sale, K extends keyof T>(
 }
 
 function readHeaders(configKey: string): DropdownData {
-    return JSON.parse(localStorage.getItem(configKey) ?? "{}");
+    return JSON.parse(localStorage.getItem(configKey) ?? "{}") as DropdownData;
 }
 
 function setHeaders(configKey: string, headers: DropdownData): void {
     localStorage.setItem(configKey, JSON.stringify(headers));
 }
 
-function getActionButtons(id: string, deleteButton: boolean, modifyButton: boolean) {
+function getActionButtons(id: string, deleteButton: boolean, modifyButton: boolean): string {
     const deleteBtn = `
         <button data-id="${id}" class="delete-button text-red-500 size-8 flex justify-center items-center rounded-xl transition hover:scale-105 duration-300 ease-in-out hover:text-red-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -76,7 +76,7 @@ function getActionButtons(id: string, deleteButton: boolean, modifyButton: boole
     `;
 }
 
-function getDatatable(table: HTMLTableElement, headings: string[], data: Array<CellRow>, searchable: boolean, sortable: boolean, paging: boolean): DataTable {
+function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow[], searchable: boolean, sortable: boolean, paging: boolean): DataTable {
     return new DataTable(
         table,
         {
@@ -110,27 +110,24 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: Array<C
     );
 }
 
-export function createDataTable<
-    T extends Product | Sale,
-    K extends keyof T & string
->(
+export function createDataTable<T extends Product | Sale>(
     configKey: string,
     table: HTMLTableElement,
     data: T[],
-    headers: K[],
+    headers: Array<keyof T & string>,
     settingDropdowns: HTMLUListElement[] | null = null,
-    searchable: boolean = true,
-    sortable: boolean = true,
-    paging: boolean = false,
-    deleteButton: boolean = true,
-    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null = null
+    searchable = true,
+    sortable = true,
+    paging = false,
+    deleteButton = true,
+    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
 ): void {
     if (dataTables.has(configKey)) {
         throw new Error("This table already exists! Use updateDataTable instead.");
     }
 
-    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null)) as Array<CellRow>;
-    const mappedHeadings = headers.map(h => h ? String(h).replaceAll("_", "-") : h);
+    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
+    const mappedHeadings = headers.map(h => h.replaceAll("_", "-"));
 
     if (deleteButton || modifyButtonCallback) {
         mappedHeadings.push("");
@@ -139,7 +136,7 @@ export function createDataTable<
     const savedHeaders = readHeaders(configKey);
     const dropdownKeys: DropdownData = {};
     headers.forEach(h => {
-        dropdownKeys[h] = savedHeaders[h] !== undefined ? savedHeaders[h] : true;
+        dropdownKeys[h] = savedHeaders[h] ?? true;
     });
 
     setHeaders(configKey, dropdownKeys);
@@ -154,11 +151,12 @@ export function createDataTable<
     });
 
     if (deleteButton) {
-        const deleteButtons = table.querySelectorAll(".delete-button") as NodeListOf<HTMLButtonElement>;
+        const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
         deleteButtons.forEach((btn) => {
+            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             btn.onclick = async () => {
                 const id = btn.dataset["id"] ?? null;
-                if (!id) return;
+                if (!id) {return;}
 
                 if (isProduct(data[0])) {
                     await deleteProduct(id);
@@ -178,13 +176,13 @@ export function createDataTable<
     }
 
     if (modifyButtonCallback !== null) {
-        const modifyButtons = table.querySelectorAll(".modify-button") as NodeListOf<HTMLButtonElement>;
+        const modifyButtons = table.querySelectorAll<HTMLButtonElement>(".modify-button");
         modifyButtons.forEach((btn) => {
             btn.onclick = modifyButtonCallback;
         });
     }
 
-    if (!settingDropdowns || settingDropdowns.length == 0) {
+    if (!settingDropdowns || settingDropdowns.length === 0) {
         return;
     }
 
@@ -192,11 +190,11 @@ export function createDataTable<
         let listHTML = "";
         headers.forEach((key) => {
             const enabled = dropdownKeys[key];
-            const uniqueId = `${configKey}-${dropdownIndex}-${key}`;
+            const uniqueId = `${configKey}-${dropdownIndex.toString()}-${key}`;
             listHTML += `
             <li class="m-1 p-1 odd:bg-gray-100 dark:odd:bg-gray-900 flex flex-row justify-center items-center gap-2 rounded-lg">
                 <input type="checkbox" class="rounded-lg product-dd" data-key="${key}" name="${key}" id="${uniqueId}" ${enabled ? "checked" : ""}>
-                <label class="!w-full cursor-pointer" for="${uniqueId}">${String(key).replaceAll("_", "-").toUpperCase()}</label>
+                <label class="!w-full cursor-pointer" for="${uniqueId}">${key.replaceAll("_", "-").toUpperCase()}</label>
             </li>
             `;
         });
@@ -204,9 +202,9 @@ export function createDataTable<
 
         sd.addEventListener('change', (event) => {
             const target = event.target as HTMLInputElement;
-            if (!target || !target.classList.contains('product-dd')) return;
+            if (!target.classList.contains('product-dd')) {return;}
 
-            const currentBoxes = Array.from(sd.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>);
+            const currentBoxes = Array.from(sd.querySelectorAll<HTMLInputElement>('.product-dd'));
             const anyChecked = currentBoxes.some(box => box.checked);
 
             if (!anyChecked) {
@@ -220,7 +218,7 @@ export function createDataTable<
                 const keyStr = box.dataset["key"]!;
                 updatedOptions[keyStr] = box.checked;
 
-                const colIndex = headers.indexOf(keyStr as K);
+                const colIndex = headers.indexOf(keyStr as keyof T & string);
                 if (colIndex !== -1) {
                     if (box.checked) {
                         dt.columns.show([colIndex]);
@@ -233,8 +231,9 @@ export function createDataTable<
             setHeaders(configKey, updatedOptions);
 
             settingDropdowns.forEach((otherSd) => {
-                if (otherSd === sd) return;
-                const otherBoxes = Array.from(otherSd.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>);
+                if (otherSd === sd) {return;}
+                const otherBoxes = Array.from(otherSd.querySelectorAll<HTMLInputElement>('.product-dd'));
+                // eslint-disable-next-line sonarjs/no-nested-functions
                 otherBoxes.forEach((otherBox) => {
                     const keyStr = otherBox.dataset["key"]!;
                     otherBox.checked = updatedOptions[keyStr]!;
