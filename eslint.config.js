@@ -10,15 +10,7 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
-      "node_modules",
-      "coverage",
-
-      "eslint.config.js",
-
-      "*.config.js",
-      "*.config.cjs",
-      "*.config.mjs",
-      "*.config.ts",
+      "node_modules"
     ],
   },
 
@@ -87,8 +79,6 @@ export default tseslint.config(
 
       "@typescript-eslint/no-floating-promises": "error",
 
-      "@typescript-eslint/no-non-null-assertion": "error",
-
       "@typescript-eslint/no-unnecessary-condition": "error",
 
       "@typescript-eslint/no-unsafe-assignment": "error",
@@ -137,4 +127,8 @@ export default tseslint.config(
       "eslint-comments/no-unused-disable": "error",
     },
   },
+  {
+    files: ["**/*.js", "**/*.cjs", "**/*.mjs", "eslint.config.js"],
+    ...tseslint.configs.disableTypeChecked,
+  }
 );

@@ -19,7 +19,7 @@ export function logError(error: Error | string): void {
   }, 3000)
 }
 
-export function darkMode() {
+export function darkMode(): void {
   const toggle = document.getElementById('dark-toggle');
   const root = document.documentElement;
   if (localStorage.getItem('theme') === 'dark') {
@@ -36,7 +36,7 @@ export function darkMode() {
   });
 }
 
-export function mobileView() {
+export function mobileView(): void {
   const menuButton = document.getElementById("menu-button");
   const dropdownMenu = document.getElementById("dropdown-menu");
   
