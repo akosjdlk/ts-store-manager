@@ -1,4 +1,4 @@
-import { DataTable } from "simple-datatables"
+import { DataTable } from "simple-datatables";
 import type { Sale } from "../types/sale";
 import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
@@ -8,28 +8,34 @@ type Cell = string | number | boolean;
 type CellRow = Array<Cell>;
 
 interface DataTableConfig {
-    dataTable: DataTable
-    storedData: Array<CellRow>
+    dataTable: DataTable;
+    storedData: Array<CellRow>;
 }
 
-type DropdownData = Map<string, boolean>
- 
+type DropdownData = Record<string, boolean>;
+
 const dataTables = new Map<string, DataTableConfig>();
 
-
-function getValues<T extends Product | Sale, K extends keyof T>(input: T, keys: Array<K>, deleteButton: boolean, modifyButton: boolean): CellRow {
+function getValues<T extends Product | Sale, K extends keyof T>(
+    input: T,
+    keys: Array<K>,
+    deleteButton: boolean,
+    modifyButton: boolean
+): CellRow {
     const data: CellRow = [];
     keys.forEach((k) => {
         data.push(input[k] as Cell);
     });
 
-    if (deleteButton || modifyButton) { data.push(getActionButtons(input.id, deleteButton, modifyButton)); }
-    
+    if (deleteButton || modifyButton) {
+        data.push(getActionButtons(input.id, deleteButton, modifyButton));
+    }
+
     return data;
 }
 
 function readHeaders(configKey: string): DropdownData {
-    return JSON.parse(localStorage.getItem(configKey) ?? "{}")
+    return JSON.parse(localStorage.getItem(configKey) ?? "{}");
 }
 
 function setHeaders(configKey: string, headers: DropdownData): void {
@@ -37,7 +43,6 @@ function setHeaders(configKey: string, headers: DropdownData): void {
 }
 
 function getActionButtons(id: string, deleteButton: boolean, modifyButton: boolean) {
-
     const deleteBtn = `
         <button data-id="${id}" class="delete-button text-red-500 size-8 flex justify-center items-center rounded-xl transition hover:scale-105 duration-300 ease-in-out hover:text-red-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -57,8 +62,7 @@ function getActionButtons(id: string, deleteButton: boolean, modifyButton: boole
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="size-6 lucide lucide-pencil-icon lucide-pencil">
-                <path
-                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                 <path d="m15 5 4 4" />
             </svg>
         </button>
@@ -72,15 +76,49 @@ function getActionButtons(id: string, deleteButton: boolean, modifyButton: boole
     `;
 }
 
+function getDatatable(table: HTMLTableElement, headings: string[], data: Array<CellRow>, searchable: boolean, sortable: boolean, paging: boolean): DataTable {
+    return new DataTable(
+        table,
+        {
+            data: {
+                headings: headings,
+                data: data
+            },
+            classes: {
+                top: "flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4",
+                
+                search: "datatable-search",
+                input: "datatable-input",
+
+                dropdown: "sm:flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400",
+                selector: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg",
+                    
+                container: "overflow-x-auto",
+                    
+                bottom: "flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4 border-t border-gray-200 dark:border-gray-700",
+                info: "text-sm font-normal text-gray-400 text-gray-400",
+
+                pagination: "datatable-pagination",
+                table: "w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable",
+
+                wrapper: "relative overflow-x-auto shadow-xs ms-4 mt-4 me-4"
+            },
+            searchable: searchable,
+            sortable: sortable,
+            paging: paging,
+        }
+    );
+}
+
 export function createDataTable<
-    T extends Product | Sale, 
+    T extends Product | Sale,
     K extends keyof T & string
 >(
     configKey: string,
     table: HTMLTableElement,
-    data: T[], 
-    headers: K[], 
-    settingDropdown: HTMLUListElement | null = null,
+    data: T[],
+    headers: K[],
+    settingDropdowns: HTMLUListElement[] | null = null,
     searchable: boolean = true,
     sortable: boolean = true,
     paging: boolean = false,
@@ -90,101 +128,118 @@ export function createDataTable<
     if (dataTables.has(configKey)) {
         throw new Error("This table already exists! Use updateDataTable instead.");
     }
-    
-    const mappedData = data.map(d => {return getValues(d, headers, deleteButton, modifyButtonCallback !== null)}) as Array<CellRow>;
-    const mappedHeadings = headers.map(h => h.replace("_", "-"));
+
+    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null)) as Array<CellRow>;
+    const mappedHeadings = headers.map(h => h ? String(h).replaceAll("_", "-") : h);
 
     if (deleteButton || modifyButtonCallback) {
         mappedHeadings.push("");
     }
-    
-    const dropdownKeys = new Map(headers.map(h => [h, true])); // TODO: read from localstorage
+
+    const savedHeaders = readHeaders(configKey);
+    const dropdownKeys: DropdownData = {};
+    headers.forEach(h => {
+        dropdownKeys[h] = savedHeaders[h] !== undefined ? savedHeaders[h] : true;
+    });
 
     setHeaders(configKey, dropdownKeys);
 
-    const dt = new DataTable(
-        table,
-        {
-            data: {
-                headings: mappedHeadings,
-                data: mappedData
-            },
-            classes: {
-                table: "w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable",
-                wrapper: "relative overflow-x-auto shadow-xs ms-4 mt-4 me-4"
-            },
-            searchable: searchable,
-            sortable: sortable,
-            paging: paging,
+    const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
+    dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
+
+    headers.forEach((h, index) => {
+        if (!dropdownKeys[h]) {
+            dt.columns.hide([index]);
         }
-    )
-
-
-    dataTables.set(configKey, {dataTable: dt, storedData: mappedData});
+    });
 
     if (deleteButton) {
         const deleteButtons = table.querySelectorAll(".delete-button") as NodeListOf<HTMLButtonElement>;
         deleteButtons.forEach((btn) => {
             btn.onclick = async () => {
                 const id = btn.dataset["id"] ?? null;
-                if (!id) {
-                    return;
-                }
+                if (!id) return;
 
                 if (isProduct(data[0])) {
-                    await deleteProduct(id)
+                    await deleteProduct(id);
                 } else {
-                    await deleteSale(id)
+                    await deleteSale(id);
                 }
 
                 const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                if (i === undefined) {
+                if (isNaN(i)) {
                     throw new Error("NO TR");
                 }
                 dt.data.data.splice(i, 1);
+                dataTables.get(configKey)?.storedData.splice(i, 1);
                 dt.update();
-            }
-        })
+            };
+        });
     }
 
     if (modifyButtonCallback !== null) {
         const modifyButtons = table.querySelectorAll(".modify-button") as NodeListOf<HTMLButtonElement>;
         modifyButtons.forEach((btn) => {
             btn.onclick = modifyButtonCallback;
-        })
+        });
     }
 
-    if (!settingDropdown) {
+    if (!settingDropdowns || settingDropdowns.length == 0) {
         return;
     }
 
+    settingDropdowns.forEach((sd, dropdownIndex) => {
+        let listHTML = "";
+        headers.forEach((key) => {
+            const enabled = dropdownKeys[key];
+            const uniqueId = `${configKey}-${dropdownIndex}-${key}`;
+            listHTML += `
+            <li class="m-1 p-1 odd:bg-gray-100 dark:odd:bg-gray-900 flex flex-row justify-center items-center gap-2 rounded-lg">
+                <input type="checkbox" class="rounded-lg product-dd" data-key="${key}" name="${key}" id="${uniqueId}" ${enabled ? "checked" : ""}>
+                <label class="!w-full cursor-pointer" for="${uniqueId}">${String(key).replaceAll("_", "-").toUpperCase()}</label>
+            </li>
+            `;
+        });
+        sd.innerHTML = listHTML;
 
-    dropdownKeys.forEach((enabled, key) => {
-        settingDropdown.innerHTML += `
-        <li class="m-1 p-1 odd:bg-gray-100 dark:odd:bg-gray-900 flex flex-row justify-center items-center gap-2 rounded-lg">
-            <input type="checkbox" class="rounded-lg product-dd" name="${key}" id="${key}" ${(enabled) ? "checked" : ""}>
-            <label class="!w-full" for="${key}">${key.toUpperCase()}</label>
-        </li>
-        `;
+        sd.addEventListener('change', (event) => {
+            const target = event.target as HTMLInputElement;
+            if (!target || !target.classList.contains('product-dd')) return;
 
-    });
-    
-    settingDropdown.addEventListener('change', (event) => {
-        const target = event.target as HTMLInputElement;
-    
-        const allBoxes = Array.from(settingDropdown.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>)
-        const options: Map<string, boolean> = new Map(allBoxes.map(e => [e.id, e.checked]));
-        
+            const currentBoxes = Array.from(sd.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>);
+            const anyChecked = currentBoxes.some(box => box.checked);
 
-        if (!Object.values(options).some(c => c)) {
-            target.checked = true;
-            return;
-        }
-        const arr = Array.from(options.keys());
-        if (deleteButton || modifyButtonCallback) {
-            arr.push("")
-        }
-        dt.options.data.headings = arr;
-        setHeaders(configKey, options);        
+            if (!anyChecked) {
+                target.checked = true;
+                return;
+            }
+
+            const updatedOptions: DropdownData = {};
+
+            currentBoxes.forEach((box) => {
+                const keyStr = box.dataset["key"]!;
+                updatedOptions[keyStr] = box.checked;
+
+                const colIndex = headers.indexOf(keyStr as K);
+                if (colIndex !== -1) {
+                    if (box.checked) {
+                        dt.columns.show([colIndex]);
+                    } else {
+                        dt.columns.hide([colIndex]);
+                    }
+                }
+            });
+
+            setHeaders(configKey, updatedOptions);
+
+            settingDropdowns.forEach((otherSd) => {
+                if (otherSd === sd) return;
+                const otherBoxes = Array.from(otherSd.querySelectorAll('.product-dd') as NodeListOf<HTMLInputElement>);
+                otherBoxes.forEach((otherBox) => {
+                    const keyStr = otherBox.dataset["key"]!;
+                    otherBox.checked = updatedOptions[keyStr]!;
+                });
+            });
+        });
     });
 }

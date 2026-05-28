@@ -152,7 +152,7 @@
             </svg>
             <span class="font-medium text-sm">Kijelentkezés</span>
           </a>
-          <button id="dropdownDefaultButton2" data-dropdown-trigger="click" data-dropdown-toggle="dropdownCustomID"
+          <button id="dropdownMobileButton" data-dropdown-trigger="click" data-dropdown-toggle="dropdownMobileID"
             class="flex items-center space-x-3 p-2 w-full hover:bg-light_color hover:dark:bg-darker rounded-lg text-left text-dark_color dark:text-light_color"
           >
             <svg
@@ -219,12 +219,14 @@
        
       </ul>
     </div>
-    
-    <div
-      class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
-      <table id="selection-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">
-      </table>
+
+    <div id="dropdownMobileID" class="z-50 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
+      <ul id="backend_data_table_dropdown_mobile" class="p-2 text-sm text-body font-medium" aria-labelledby="dropdownMobileButton">
+       
+      </ul>
     </div>
+    
+      <table></table>
 
     <div id="toast-danger" class="hidden z-[9999] fixed bottom-5 right-5 flex items-center w-full max-w-sm p-4 bg-red-300 rounded-base shadow-xs border border-default" role="alert">
       <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 text-fg-danger bg-danger-soft rounded">

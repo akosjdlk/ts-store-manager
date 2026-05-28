@@ -52,7 +52,7 @@
 }
 
 .custom-datatable th {
-  @apply px-4 py-4 bg-gray-300 dark:bg-gray-600 dark:text-gray-300 text-gray-700 uppercase text-center text-nowrap;
+  @apply px-4 py-4 bg-gray-400/70 dark:bg-gray-600 dark:text-gray-300 text-gray-700 uppercase text-center text-nowrap;
 }
 
 .custom-datatable tbody tr {
@@ -64,9 +64,11 @@
 }
 
 .custom-datatable {
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 }
+
+/* TODO: table style */
 
 .custom-datatable thead th:first-child {
   @apply rounded-tl-lg rounded-bl-lg;
@@ -77,11 +79,11 @@
 }
 
 .custom-datatable tbody tr td:first-child {
-  @apply rounded-tl-full rounded-bl-full;
+  @apply rounded-tl-full !rounded-bl-full;
 }
 
 .custom-datatable tbody tr td:last-child {
-  @apply rounded-tr-full rounded-br-full;
+  @apply rounded-tr-full !rounded-br-full;
 }
 
 .datatable-sorter {
@@ -104,3 +106,6 @@ input {
   -ms-user-select: text;
   user-select: text;
 }
+
+/* TODO: paging style
+  TODO: search style */

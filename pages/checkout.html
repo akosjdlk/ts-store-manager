@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kassza</title>
-    <link rel="stylesheet" href="/src/styles/style.css" />
+    <link rel="stylesheet" href="../src/styles/style.css"/>
+    
 </head>
 
 <body class="bg-light_color dark:bg-dark_lighter_bg h-screen overflow-hidden">
@@ -98,11 +99,8 @@
                 </svg>
             </button>
         </div>
-        <div
-            class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
-            <table id="default-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">
+            <table>
             </table>
-        </div>
     </div>
 
     <div id="baked-modal" tabindex="-1" aria-hidden="true" class="size-140 hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-[calc(100%)]">
@@ -139,6 +137,20 @@
     <script type="module">
         import { darkMode } from "../src/main.ts"
         darkMode()
+
+        // import { createDataTable } from "../src/components/table";
+        // import { fetchAllProducts } from "../src/api/products";
+
+        // async function main() {
+        //     const products = await fetchAllProducts();
+        //     const table = document.querySelector('table');
+
+        //     //const headers = products.length > 0 ? Object.keys(products[0]) : [];
+
+        //     createDataTable("checkout", table, products, [""], null, false, true, false, true, (ev) => {console.log(ev.currentTarget)});
+        // }
+
+        // await main();
     </script>
     <script type="module" src="../src/components/checkout.ts"></script>
 </body>
