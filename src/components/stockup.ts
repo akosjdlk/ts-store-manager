@@ -3,10 +3,13 @@ import { initFlowbite } from 'flowbite'
 import { fetchProductById, updateProduct } from '../api/products';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { fetchProductById, updateProduct } from '../api/products';
 
 =======
 >>>>>>> e4d2c36 (stocking base)
+=======
+>>>>>>> 79b38ae2c37613b3e2d571e3cb3eabe0008e1dfd
 initFlowbite()
 
 const stockupSubmitBtn = document.getElementById('stockup_submit_btn') as HTMLButtonElement
