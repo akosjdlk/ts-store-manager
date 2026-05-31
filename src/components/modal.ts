@@ -1,16 +1,18 @@
+import type { DataTable } from "simple-datatables";
+
 type ModalInputConfig =
   | {
-      id: string;
-      type: 'table';
-      element: HTMLTableElement;
-    }
+    id: string;
+    type: "table";
+    table: DataTable;
+  }
   | {
-      id: string;
-      type: 'text' | 'number';
-      placeholder?: string;
-      className?: string;
-      attributes?: Record<string, string>;
-    };
+    id: string;
+    type: "text" | "number";
+    placeholder?: string;
+    className?: string;
+    attributes?: Record<string, string>;
+  };
 
 interface ModalOptions {
   id?: string;
@@ -25,7 +27,7 @@ interface ModalOptions {
 
 export interface TrackingInput {
   id: string;
-  type: 'table' | 'text' | 'number';
+  type: "table" | "text" | "number";
   element?: HTMLInputElement;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getValue: () => any;
@@ -45,29 +47,30 @@ export class CustomModal {
   private selectedTableRow: HTMLTableRowElement | null = null;
 
   constructor(options: ModalOptions) {
-    this.id = options.id ?? `modal-${Math.random().toString(36).substring(2, 9)}`;
+    this.id =
+      options.id ?? `modal-${Math.random().toString(36).substring(2, 9)}`;
     this.title = options.title;
-    this.submitText = options.submitText ?? 'Hozzáadás';
-    this.cancelText = options.cancelText ?? 'Mégse';
+    this.submitText = options.submitText ?? "Hozzáadás";
+    this.cancelText = options.cancelText ?? "Mégse";
     this.inputsConfig = options.inputs;
     this.onSubmit = options.onSubmit;
-    this.onCancel = options.onCancel ?? (() => {});
+    this.onCancel = options.onCancel ?? (() => { });
 
     this.init();
   }
 
   private init(): void {
     // Top-level modal backdrop (Flowbite layout pattern)
-    this.modalEl = document.createElement('div');
+    this.modalEl = document.createElement("div");
     this.modalEl.id = this.id;
-    this.modalEl.setAttribute('tabindex', '-1');
-    this.modalEl.setAttribute('aria-hidden', 'true');
+    this.modalEl.setAttribute("tabindex", "-1");
+    this.modalEl.setAttribute("aria-hidden", "true");
     this.modalEl.className =
-      'fixed top-0 right-0 left-0 z-50 hidden w-full h-full overflow-x-hidden overflow-y-auto md:inset-0 justify-center items-center bg-gray-900/50 dark:bg-gray-900/80';
+      "fixed top-0 right-0 left-0 z-50 hidden w-full h-full overflow-x-hidden overflow-y-auto md:inset-0 justify-center items-center bg-gray-900/50 dark:bg-gray-900/80";
 
     // Modal inner structure utilizing Flowbite utility tokens
     this.modalEl.innerHTML = `
-      <div class="relative p-4 w-full max-w-2xl max-h-full">
+      <div class="relative p-4 w-full max-w-4xl max-h-full">
         <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
           <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
             <h3 class="text-lg font-medium text-heading">
@@ -92,7 +95,7 @@ export class CustomModal {
             
             <div class="js-footer-inputs flex items-center space-x-4"></div>
 
-            <button type="button" class="js-modal-close text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+            <button type="button" class="!ml-auto js-modal-close text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
               ${this.cancelText}
             </button>
           </div>
@@ -106,47 +109,90 @@ export class CustomModal {
   }
 
   private renderInputs(): void {
-    const bodyContainer = this.modalEl.querySelector('.js-modal-body')!;
-    const footerInputsContainer = this.modalEl.querySelector('.js-footer-inputs')!;
+    const bodyContainer = this.modalEl.querySelector(".js-modal-body")!;
+    const footerInputsContainer =
+      this.modalEl.querySelector(".js-footer-inputs")!;
 
     this.inputsConfig.forEach((config) => {
-      if (config.type === 'table') {
-        const table = config.element;
-        table.id = table.id || 'selection-table';
-        table.className = `w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable ${table.className}`;
+      if (config.type === "table") {
+        const table = config.table.dom;
+        table.id = table.id;
 
-        // Dynamic event delegation mapping row selection clicks
-        table.addEventListener('click', (e: MouseEvent) => {
+        table.addEventListener("click", (e: MouseEvent) => {
           const target = e.target as HTMLElement;
-          const row = target.closest('tr');
-          
-          if (!row || row.parentElement?.tagName === 'THEAD') {return;}
+          const row = target.closest("tr");
 
-          // Clear existing active selection indicators
-          table.querySelectorAll('tr').forEach((tr) => {
-            tr.classList.remove('bg-brand/10', 'dark:bg-brand/20', 'font-semibold');
+          if (!row || row.parentElement?.tagName === "THEAD") {
+            return;
+          }
+
+          table.querySelectorAll("tr").forEach((tr) => {
+            tr.classList.remove(
+              "!bg-brand/10",
+              "!dark:bg-brand/20",
+              "!font-semibold",
+            );
           });
 
-          // Set active classes on targeted row selection
-          row.classList.add('bg-brand/10', 'dark:bg-brand/20', 'font-semibold');
+          row.classList.add(
+            "!bg-brand/10",
+            "!dark:bg-brand/20",
+            "!font-semibold",
+          );
           this.selectedTableRow = row;
+
+          const numberInput = this.trackedInputs.find(
+            (input) => input.type === "text" || input.type === "number"
+          );
+        
+          if (numberInput && numberInput.element) {
+            numberInput.element.focus();
+            numberInput.element.select();
+            numberInput.element.classList.add("ring-4", "ring-brand-medium");
+
+            setTimeout(() => {
+              numberInput.element?.classList.remove("ring-4", "ring-brand-medium");
+            }, 800);
+          }
         });
 
-        bodyContainer.appendChild(table);
+        config.table.on("datatable.update", () => {
+          table.querySelectorAll("tr").forEach((tr) => {
+            tr.classList.remove(
+              "!bg-brand/10",
+              "!dark:bg-brand/20",
+              "!font-semibold",
+            );
+          });
+        });
+        config.table.on("datatable.page", () => {
+          table.querySelectorAll("tr").forEach((tr) => {
+            tr.classList.remove(
+              "!bg-brand/10",
+              "!dark:bg-brand/20",
+              "!font-semibold",
+            );
+          });
+        });
+
+        bodyContainer.appendChild(config.table.wrapperDOM);
         this.trackedInputs.push({
           id: config.id,
-          type: 'table',
+          type: "table",
           getValue: () => this.selectedTableRow,
         });
-
-      } else if (config.type === 'text' || config.type === 'number') {
-        const input = document.createElement('input');
+      } else if (config.type === "text" || config.type === "number") {
+        const input = document.createElement("input");
         input.type = config.type;
-        input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className || ''}`;
-        
-        if (config.placeholder) {input.placeholder = config.placeholder;}
+        input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className || ""}`;
+
+        if (config.placeholder) {
+          input.placeholder = config.placeholder;
+        }
         if (config.attributes) {
-          Object.entries(config.attributes).forEach(([key, val]) => { input.setAttribute(key, val); });
+          Object.entries(config.attributes).forEach(([key, val]) => {
+            input.setAttribute(key, val);
+          });
         }
 
         footerInputsContainer.appendChild(input);
@@ -162,38 +208,43 @@ export class CustomModal {
 
   private setupEvents(): void {
     // Intercept action elements via helper hooks
-    this.modalEl.querySelectorAll('.js-modal-close').forEach((btn) => {
-      btn.addEventListener('click', () => { this.close(); });
+    this.modalEl.querySelectorAll(".js-modal-close").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.destroy(true);
+      });
     });
 
-    const submitBtn = this.modalEl.querySelector('.js-modal-submit');
-    submitBtn?.addEventListener('click', () => {
+    const submitBtn = this.modalEl.querySelector(".js-modal-submit");
+    submitBtn?.addEventListener("click", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dataPayload: Record<string, any> = {};
-      
+
       this.trackedInputs.forEach((input) => {
         dataPayload[input.id] = input.getValue();
       });
 
       this.onSubmit(dataPayload);
+      this.destroy(false);
     });
   }
 
   public open(): void {
-    this.modalEl.classList.remove('hidden');
-    this.modalEl.classList.add('flex');
-    document.body.classList.add('overflow-hidden'); // Block layer viewport scrolling
+    this.modalEl.classList.remove("hidden");
+    this.modalEl.classList.add("flex");
+    document.body.classList.add("overflow-hidden"); // Block layer viewport scrolling
   }
 
-  public close(): void {
-    this.modalEl.classList.remove('flex');
-    this.modalEl.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-    this.onCancel();
+  public close(cancelled: boolean = false): void {
+    this.modalEl.classList.remove("flex");
+    this.modalEl.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+    if (cancelled) { this.onCancel(); }
   }
 
-  public destroy(): void {
-    this.close();
-    this.modalEl.remove();
+  public destroy(cancelled: boolean): void {
+    this.close(cancelled);
+    setTimeout(() => {
+      this.modalEl.remove();
+    }, 10);
   }
 }
