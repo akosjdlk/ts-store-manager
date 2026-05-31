@@ -1,5 +1,8 @@
 import type { DataTable } from "simple-datatables";
 
+// TODO: another modal for modify + add new thing
+// TODO: toast add new thing + modify
+
 type ModalInputConfig =
   | {
     id: string;

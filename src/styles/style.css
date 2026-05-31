@@ -68,8 +68,6 @@
   border-spacing: 0 !important;
 }
 
-/* TODO: table style */
-
 .custom-datatable thead th:first-child {
   @apply rounded-tl-lg rounded-bl-lg;
 }
@@ -122,6 +120,3 @@ th[data-sortable="true"]::after {
 .dark th[data-sortable="true"]::after {
   background-color: var(--color-gray-300) !important;
 }
-
-/* TODO: paging style
-  TODO: search style */
