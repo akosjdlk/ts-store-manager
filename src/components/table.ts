@@ -126,6 +126,7 @@ export function createDataTable<T extends Product | Sale>(
         throw new Error("This table already exists! Use updateDataTable instead.");
     }
 
+    // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
     if (table === null) {
         throw new Error("Table is null.")
     }

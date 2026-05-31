@@ -20,8 +20,7 @@ interface ModalOptions {
   submitText?: string;
   cancelText?: string;
   inputs: ModalInputConfig[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSubmit: (data: Record<string, any>) => void;
+  onSubmit: (data: Record<string, object>) => void;
   onCancel?: () => void;
 }
 
@@ -38,8 +37,7 @@ export class CustomModal {
   private submitText: string;
   private cancelText: string;
   private inputsConfig: ModalInputConfig[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private onSubmit: (data: Record<string, any>) => void;
+  private onSubmit: (data: Record<string, object>) => void;
   private onCancel: () => void;
 
   private modalEl!: HTMLDivElement;
@@ -54,7 +52,7 @@ export class CustomModal {
     this.cancelText = options.cancelText ?? "Mégse";
     this.inputsConfig = options.inputs;
     this.onSubmit = options.onSubmit;
-    this.onCancel = options.onCancel ?? (() => { });
+    this.onCancel = options.onCancel ?? ((): void => { /* empty */ });
 
     this.init();
   }
@@ -116,7 +114,6 @@ export class CustomModal {
     this.inputsConfig.forEach((config) => {
       if (config.type === "table") {
         const table = config.table.dom;
-        table.id = table.id;
 
         table.addEventListener("click", (e: MouseEvent) => {
           const target = e.target as HTMLElement;
@@ -145,7 +142,7 @@ export class CustomModal {
             (input) => input.type === "text" || input.type === "number"
           );
         
-          if (numberInput && numberInput.element) {
+          if (numberInput?.element) {
             numberInput.element.focus();
             numberInput.element.select();
             numberInput.element.classList.add("ring-4", "ring-brand-medium");
@@ -181,10 +178,10 @@ export class CustomModal {
           type: "table",
           getValue: () => this.selectedTableRow,
         });
-      } else if (config.type === "text" || config.type === "number") {
+      } else {
         const input = document.createElement("input");
         input.type = config.type;
-        input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className || ""}`;
+        input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className ?? ""}`;
 
         if (config.placeholder) {
           input.placeholder = config.placeholder;
@@ -216,10 +213,10 @@ export class CustomModal {
 
     const submitBtn = this.modalEl.querySelector(".js-modal-submit");
     submitBtn?.addEventListener("click", () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dataPayload: Record<string, any> = {};
+      const dataPayload: Record<string, object> = {};
 
       this.trackedInputs.forEach((input) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         dataPayload[input.id] = input.getValue();
       });
 
@@ -234,7 +231,7 @@ export class CustomModal {
     document.body.classList.add("overflow-hidden"); // Block layer viewport scrolling
   }
 
-  public close(cancelled: boolean = false): void {
+  public close(cancelled = false): void {
     this.modalEl.classList.remove("flex");
     this.modalEl.classList.add("hidden");
     document.body.classList.remove("overflow-hidden");
