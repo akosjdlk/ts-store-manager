@@ -2,8 +2,8 @@ import type { Product } from "../types/product";
 
 const PRODUCTS_ENDPOINT = "/api/products";
 
-export async function fetchFilteredProducts(filters: Record<string, string>): Promise<Product[]> {
-    const queryString = new URLSearchParams(filters).toString();
+export async function fetchFilteredProducts(filters: Record<string, string | null>): Promise<Product[]> {
+    const queryString = new URLSearchParams(Object.entries(filters).filter((entry): entry is [string, string] => entry[1] !== null)).toString();
     const response = await fetch(`${PRODUCTS_ENDPOINT}?${queryString}`);
     if (!response.ok) {
         throw new Error("Failed to fetch products");
@@ -13,6 +13,7 @@ export async function fetchFilteredProducts(filters: Record<string, string>): Pr
 
 export async function fetchAllProducts(): Promise<Product[]> {
     const response = await fetch(PRODUCTS_ENDPOINT);
+
     if (!response.ok) {
         throw new Error(`Failed to fetch products`);
     }
