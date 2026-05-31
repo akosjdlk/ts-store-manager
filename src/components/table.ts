@@ -121,9 +121,13 @@ export function createDataTable<T extends Product | Sale>(
     paging = false,
     deleteButton = true,
     modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
-): void {
+): DataTable {
     if (dataTables.has(configKey)) {
         throw new Error("This table already exists! Use updateDataTable instead.");
+    }
+
+    if (table === null) {
+        throw new Error("Table is null.")
     }
 
     const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
@@ -183,7 +187,7 @@ export function createDataTable<T extends Product | Sale>(
     }
 
     if (!settingDropdowns || settingDropdowns.length === 0) {
-        return;
+        return dt;
     }
 
     settingDropdowns.forEach((sd, dropdownIndex) => {
@@ -241,4 +245,5 @@ export function createDataTable<T extends Product | Sale>(
             });
         });
     });
+    return dt;
 }
