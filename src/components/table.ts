@@ -3,6 +3,8 @@ import type { Sale } from "../types/sale";
 import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
+import { confirmationModal } from "./modal";
+import { CreateToast } from "./toast";
 
 interface Cell {
     data: string;
@@ -183,46 +185,31 @@ export function createDataTable<T extends Product | Sale>(
     if (deleteButton) {
         const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
         deleteButtons.forEach((btn) => {
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            btn.onclick = async () => {
-                const biztos = confirm("Biztosan törölni szeretnéd ezt a tételt?");
-                if (biztos) {
-                    const toastEl = document.getElementById("toast-danger");
-                    if (!toastEl) {return};
-    
-                    const messageEl = document.querySelector(".toast-text");
-                    if (messageEl) {
-                      messageEl.innerHTML = `Termék törölve`;
-                    }
-                
-                    toastEl.classList.remove("hidden");
-                    toastEl.classList.add("flex");
-                
-                    setTimeout(() => {
-                      toastEl.classList.remove("flex");
-                      toastEl.classList.add("hidden");
-                    }, 4000);
-    
-                    const id = btn.dataset["id"] ?? null;
-                    if (!id) {return;}
-    
-                    if (isProduct(data[0])) {
-                        await deleteProduct(id);
-                    } else {
-                        await deleteSale(id);
-                    }
-    
-                    const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                    if (isNaN(i)) {
-                        throw new Error("NO TR");
-                    }
-                    dt.data.data.splice(i, 1);
-                    dataTables.get(configKey)?.storedData.splice(i, 1);
-                    dt.update();
-                }
-                else {
-                    return;
-                }
+            btn.onclick = (): void => {
+                confirmationModal(
+                    "Biztosan törli a terméket?", 
+                    async () => {
+                        CreateToast("Termék törölve", "danger");
+                        
+                        const id = btn.dataset["id"] ?? null;
+                        if (!id) {return;}
+        
+                        if (isProduct(data[0])) {
+                            await deleteProduct(id);
+                        } else {
+                            await deleteSale(id);
+                        }
+        
+                        const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
+                        if (isNaN(i)) {
+                            throw new Error("NO TR");
+                        }
+                        dt.data.data.splice(i, 1);
+                        dataTables.get(configKey)?.storedData.splice(i, 1);
+                        dt.update();
+                    },
+                    () => { /* empty */ }
+                );
             };
         });
     }
