@@ -35,11 +35,6 @@
     </div>
     <div class="grid grid-cols-[100px_1fr]">
         <div class="bg-dark_color w-24 pt-4 h-[calc(100vh-6rem)] flex flex-col items-center space-y-5 dark:bg-opacity-50">
-            
-            <!-- PÉKÁRÚ BUTTON 
-                TODO: Modal, termék kiválasztás, ami pékárú és mennyiség megadás  
-            -->
-            
             <button data-modal-target="baked-modal" data-modal-toggle="baked-modal" class="bg-bread text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_bread">
                 <div class="rotate-45 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -54,11 +49,6 @@
                     </svg>
                 </div>
             </button>
-
-            <!-- GYÜMÖLCS/ZÖLDSÉG BUTTON 
-                TODO: Modal, termék kiválasztás, ami gyümölcs / zöldség és mennyiség megadás 
-            -->
-
             <button data-modal-target="fruit-modal" data-modal-toggle="fruit-modal"
                 class="bg-green-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -69,11 +59,6 @@
                         d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21" />
                 </svg>
             </button>
-
-            <!-- ITAL BUTTON 
-                TODO: Modal, termék kiválasztás, ami ital / alkohol és mennyiség megadás
-            -->
-
             <button data-modal-target="drink-modal" data-modal-toggle="drink-modal"
                 class="bg-cyan-500 text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-cyan-600">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -84,11 +69,6 @@
                     <path d="M17 13h-4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h4" />
                 </svg>
             </button>
-
-            <!-- SEARCH BUTTON 
-                TODO: Modal, mindenre rátud keresni, mennyiség megadás 
-            -->
-
             <button data-modal-target="search-modal" data-modal-toggle="search-modal"
                 class="bg-darker_light text-dark_color w-20 h-20 flex justify-center items-center rounded-xl transition duration-300 ease-in-out hover:bg-dark_grey">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -103,54 +83,11 @@
             </table>
     </div>
 
-    <div id="baked-modal" tabindex="-1" aria-hidden="true" class="size-140 hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-[calc(100%)]">
-        <div class="relative p-4 max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                    <h3 class="text-lg font-medium text-heading">
-                        Pékárú hozzáadása
-                    </h3>
-                    <button type="button" class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center" data-modal-hide="baked-modal">
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <div class="py-4 md:py-6" class="relative overflow-x-auto shadow-xs ms-4 mt-4 me-4">
-                    <table id="selection-table" class="w-full h-fit text-sm text-left rtl:text-right text-body custom-datatable">
-                    </table>
-                </div>
-                <div class="flex items-center space-x-4 border-t border-default pt-4 md:pt-6">
-                    <button type="submit" class="inline-flex items-center  text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                        <svg class="w-4 h-4 me-1.5 -ms-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
-                        Termék hozzáadása
-                    </button>
-                    <input type="text" class="rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600" placeholder="Mennyiség...">
-                    <button data-modal-hide="baked-modal" type="button" class="text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Mégse</button>
-                </div>
-            </div>
-        </div>
-    </div> 
+<!-- TODO: Fizetés -->
 
     <script type="module">
         import { darkMode } from "../src/main.ts"
         darkMode()
-
-        // import { createDataTable } from "../src/components/table";
-        // import { fetchAllProducts } from "../src/api/products";
-
-        // async function main() {
-        //     const products = await fetchAllProducts();
-        //     const table = document.querySelector('table');
-
-        //     //const headers = products.length > 0 ? Object.keys(products[0]) : [];
-
-        //     createDataTable("checkout", table, products, [""], null, false, true, false, true, (ev) => {console.log(ev.currentTarget)});
-        // }
-
-        // await main();
     </script>
     <script type="module" src="../src/components/checkout.ts"></script>
 </body>
