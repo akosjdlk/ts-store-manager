@@ -53,6 +53,7 @@ export default tseslint.config(
       "@typescript-eslint/no-misused-promises": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
       "sonarjs/pseudo-random": "off",
+      "sonarjs/no-commented-code": "off",
 
       /*
        * TYPESCRIPT

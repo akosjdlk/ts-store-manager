@@ -106,6 +106,9 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
             searchable: searchable,
             sortable: sortable,
             paging: paging,
+            columns: [
+                {select: headings.length - 1, sortable: false}
+            ]
         }
     );
 }
@@ -149,6 +152,97 @@ export function createDataTable<T extends Product | Sale>(
     const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
     dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
 
+    function styleZeroStockRows(): void {
+        const rows = table.querySelectorAll("tbody tr");
+        if (!rows.length) {return};
+
+        let stockColumnIndex = -1;
+        const thElements = table.querySelectorAll("thead th");
+        thElements.forEach((th, idx) => {
+            const text = th.textContent.trim().toLowerCase() || "";
+            if (text === "keszlet" || text === "készlet" || text === "stock") {
+                const dataCol = th.getAttribute("data-column");
+                stockColumnIndex = dataCol !== null ? Number(dataCol) : idx;
+            }
+        });
+
+        rows.forEach((tr) => {
+            const cells = tr.querySelectorAll("td");
+            let shouldHighlight = false;
+
+
+            cells.forEach((td) => {
+                const currentColumnAttr = td.getAttribute("data-column");
+                const isStockCell = currentColumnAttr !== null 
+                    ? Number(currentColumnAttr) === stockColumnIndex 
+                    : Array.from(cells).indexOf(td) === stockColumnIndex;
+
+                if (isStockCell) {
+                    const stockValue = parseInt(td.textContent.trim() || "", 10);
+                    if (!isNaN(stockValue) && stockValue === 0) {
+                        shouldHighlight = true;
+                    }
+                }
+            });
+
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            if (shouldHighlight) {
+                cells.forEach((td) => {
+                    td.style.setProperty("background-color", "#fee2e2", "important"); 
+                    td.style.setProperty("color", "#7f1d1d", "important");            
+                });
+            } else {
+                cells.forEach((td) => {
+                    td.style.removeProperty("background-color");
+                    td.style.removeProperty("color");
+                });
+            }
+        });
+    }
+
+    // function renderSortIcons(): void {
+    //     const thElements = table.querySelectorAll("th");
+        
+    //     thElements.forEach((th, index) => {
+    //         if ((deleteButton || modifyButtonCallback) && index === thElements.length - 1) {
+    //             return;
+    //         }
+
+    //         if (th.querySelector(".custom-sort-icon")) {
+    //             return;
+    //         }
+
+    //         const sorter = th.querySelector(".datatable-sorter");
+
+    //         if (sorter) {
+    //             sorter.classList.add("flex", "items-center", "justify-center", "w-full", "gap-2");
+
+    //             const svgContainer = document.createElement("span");
+    //             svgContainer.className = "custom-sort-icon shrink-0";
+    //             svgContainer.innerHTML = `
+    //                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    //                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+    //                 </svg>
+    //             `;
+    //             sorter.appendChild(svgContainer);
+    //         }
+    //     });
+    // }
+
+    function refreshTableUI(): void {
+        // renderSortIcons();
+        styleZeroStockRows();
+    }
+
+    // dt.on("datatable.init", () => refreshTableUI());
+    // dt.on("datatable.sort", () => setTimeout(refreshTableUI, 10));
+    // dt.on("datatable.page", () => setTimeout(refreshTableUI, 10));
+    // dt.on("datatable.search", () => setTimeout(refreshTableUI, 10));
+    // dt.on("datatable.update", () => setTimeout(refreshTableUI, 10));
+
+    setTimeout(refreshTableUI, 50);
+
+
     headers.forEach((h, index) => {
         if (!dropdownKeys[h]) {
             dt.columns.hide([index]);
@@ -160,22 +254,44 @@ export function createDataTable<T extends Product | Sale>(
         deleteButtons.forEach((btn) => {
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             btn.onclick = async () => {
-                const id = btn.dataset["id"] ?? null;
-                if (!id) {return;}
-
-                if (isProduct(data[0])) {
-                    await deleteProduct(id);
-                } else {
-                    await deleteSale(id);
+                const biztos = confirm("Biztosan törölni szeretnéd ezt a tételt?");
+                if (biztos) {
+                    const toastEl = document.getElementById("toast-danger");
+                    if (!toastEl) {return};
+    
+                    const messageEl = document.querySelector(".toast-text");
+                    if (messageEl) {
+                      messageEl.innerHTML = `Termék törölve`;
+                    }
+                
+                    toastEl.classList.remove("hidden");
+                    toastEl.classList.add("flex");
+                
+                    setTimeout(() => {
+                      toastEl.classList.remove("flex");
+                      toastEl.classList.add("hidden");
+                    }, 4000);
+    
+                    const id = btn.dataset["id"] ?? null;
+                    if (!id) {return;}
+    
+                    if (isProduct(data[0])) {
+                        await deleteProduct(id);
+                    } else {
+                        await deleteSale(id);
+                    }
+    
+                    const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
+                    if (isNaN(i)) {
+                        throw new Error("NO TR");
+                    }
+                    dt.data.data.splice(i, 1);
+                    dataTables.get(configKey)?.storedData.splice(i, 1);
+                    dt.update();
                 }
-
-                const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                if (isNaN(i)) {
-                    throw new Error("NO TR");
+                else {
+                    return;
                 }
-                dt.data.data.splice(i, 1);
-                dataTables.get(configKey)?.storedData.splice(i, 1);
-                dt.update();
             };
         });
     }
@@ -234,6 +350,8 @@ export function createDataTable<T extends Product | Sale>(
             });
 
             setHeaders(configKey, updatedOptions);
+
+            setTimeout(refreshTableUI, 100);    
 
             settingDropdowns.forEach((otherSd) => {
                 if (otherSd === sd) {return;}
