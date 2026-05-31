@@ -4,7 +4,16 @@ import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 
-type Cell = string | number | boolean;
+interface Cell {
+    data: string;
+    text?: string;
+    order?: string | number;
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    attributes?: {
+        [key: string]: string;
+    };
+}
+
 type CellRow = Cell[];
 
 interface DataTableConfig {
@@ -24,11 +33,11 @@ function getValues<T extends Product | Sale>(
 ): CellRow {
     const data: CellRow = [];
     keys.forEach((k) => {
-        data.push(input[k] as Cell);
+        data.push({data: input[k]} as Cell);
     });
 
     if (deleteButton || modifyButton) {
-        data.push(getActionButtons(input.id, deleteButton, modifyButton));
+        data.push({ data: getActionButtons(input.id, deleteButton, modifyButton) });
     }
 
     return data;
@@ -106,6 +115,9 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
             searchable: searchable,
             sortable: sortable,
             paging: paging,
+            columns: [
+                {select: headings.length - 1, sortable: false}
+            ]
         }
     );
 }
@@ -131,7 +143,18 @@ export function createDataTable<T extends Product | Sale>(
         throw new Error("Table is null.")
     }
 
-    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
+    const mappedData = data.map(d =>
+        {
+            const cRow = getValues(d, headers, deleteButton, modifyButtonCallback !== null)
+            if (isProduct(d) && d.keszlet < 1) {
+                cRow.forEach(td => {
+                    td.attributes ??= {};
+                    td.attributes["class"] = `${td.attributes["class"] ?? ""} !text-red-800 bg-red-600/30 dark:!text-red-300 dark:bg-red-800/40`
+                })
+            }
+            return cRow
+        }
+    );
     const mappedHeadings = headers.map(h => h.replaceAll("_", "-"));
 
     if (deleteButton || modifyButtonCallback) {
@@ -149,6 +172,8 @@ export function createDataTable<T extends Product | Sale>(
     const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
     dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
 
+
+
     headers.forEach((h, index) => {
         if (!dropdownKeys[h]) {
             dt.columns.hide([index]);
@@ -160,22 +185,44 @@ export function createDataTable<T extends Product | Sale>(
         deleteButtons.forEach((btn) => {
             // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
             btn.onclick = async () => {
-                const id = btn.dataset["id"] ?? null;
-                if (!id) {return;}
-
-                if (isProduct(data[0])) {
-                    await deleteProduct(id);
-                } else {
-                    await deleteSale(id);
+                const biztos = confirm("Biztosan törölni szeretnéd ezt a tételt?");
+                if (biztos) {
+                    const toastEl = document.getElementById("toast-danger");
+                    if (!toastEl) {return};
+    
+                    const messageEl = document.querySelector(".toast-text");
+                    if (messageEl) {
+                      messageEl.innerHTML = `Termék törölve`;
+                    }
+                
+                    toastEl.classList.remove("hidden");
+                    toastEl.classList.add("flex");
+                
+                    setTimeout(() => {
+                      toastEl.classList.remove("flex");
+                      toastEl.classList.add("hidden");
+                    }, 4000);
+    
+                    const id = btn.dataset["id"] ?? null;
+                    if (!id) {return;}
+    
+                    if (isProduct(data[0])) {
+                        await deleteProduct(id);
+                    } else {
+                        await deleteSale(id);
+                    }
+    
+                    const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
+                    if (isNaN(i)) {
+                        throw new Error("NO TR");
+                    }
+                    dt.data.data.splice(i, 1);
+                    dataTables.get(configKey)?.storedData.splice(i, 1);
+                    dt.update();
                 }
-
-                const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                if (isNaN(i)) {
-                    throw new Error("NO TR");
+                else {
+                    return;
                 }
-                dt.data.data.splice(i, 1);
-                dataTables.get(configKey)?.storedData.splice(i, 1);
-                dt.update();
             };
         });
     }
@@ -246,5 +293,6 @@ export function createDataTable<T extends Product | Sale>(
             });
         });
     });
+
     return dt;
 }
