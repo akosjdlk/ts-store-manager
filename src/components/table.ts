@@ -4,7 +4,16 @@ import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 
-type Cell = string | number | boolean;
+interface Cell {
+    data: string;
+    text?: string;
+    order?: string | number;
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    attributes?: {
+        [key: string]: string;
+    };
+}
+
 type CellRow = Cell[];
 
 interface DataTableConfig {
@@ -24,11 +33,11 @@ function getValues<T extends Product | Sale>(
 ): CellRow {
     const data: CellRow = [];
     keys.forEach((k) => {
-        data.push(input[k] as Cell);
+        data.push({data: input[k]} as Cell);
     });
 
     if (deleteButton || modifyButton) {
-        data.push(getActionButtons(input.id, deleteButton, modifyButton));
+        data.push({ data: getActionButtons(input.id, deleteButton, modifyButton) });
     }
 
     return data;
@@ -134,7 +143,18 @@ export function createDataTable<T extends Product | Sale>(
         throw new Error("Table is null.")
     }
 
-    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
+    const mappedData = data.map(d =>
+        {
+            const cRow = getValues(d, headers, deleteButton, modifyButtonCallback !== null)
+            if (isProduct(d) && d.keszlet < 1) {
+                cRow.forEach(td => {
+                    td.attributes ??= {};
+                    td.attributes["class"] = `${td.attributes["class"] ?? ""} !text-red-800 bg-red-600/30 dark:!text-red-300 dark:bg-red-800/40`
+                })
+            }
+            return cRow
+        }
+    );
     const mappedHeadings = headers.map(h => h.replaceAll("_", "-"));
 
     if (deleteButton || modifyButtonCallback) {
@@ -152,65 +172,6 @@ export function createDataTable<T extends Product | Sale>(
     const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
     dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
 
-    function styleZeroStockRows(): void {
-        const rows = table.querySelectorAll("tbody tr");
-        if (!rows.length) {return};
-
-        let stockColumnIndex = -1;
-        const thElements = table.querySelectorAll("thead th");
-        thElements.forEach((th, idx) => {
-            const text = th.textContent.trim().toLowerCase() || "";
-            if (text === "keszlet" || text === "készlet" || text === "stock") {
-                const dataCol = th.getAttribute("data-column");
-                stockColumnIndex = dataCol !== null ? Number(dataCol) : idx;
-            }
-        });
-
-        rows.forEach((tr) => {
-            const cells = tr.querySelectorAll("td");
-            let shouldHighlight = false;
-
-
-            cells.forEach((td) => {
-                const currentColumnAttr = td.getAttribute("data-column");
-                const isStockCell = currentColumnAttr !== null 
-                    ? Number(currentColumnAttr) === stockColumnIndex 
-                    : Array.from(cells).indexOf(td) === stockColumnIndex;
-
-                if (isStockCell) {
-                    const stockValue = parseInt(td.textContent.trim() || "", 10);
-                    if (!isNaN(stockValue) && stockValue === 0) {
-                        shouldHighlight = true;
-                    }
-                }
-            });
-
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (shouldHighlight) {
-                cells.forEach((td) => {
-                    td.style.setProperty("background-color", "#fee2e2", "important"); 
-                    td.style.setProperty("color", "#7f1d1d", "important");            
-                });
-            } else {
-                cells.forEach((td) => {
-                    td.style.removeProperty("background-color");
-                    td.style.removeProperty("color");
-                });
-            }
-        });
-    }
-
-    function refreshTableUI(): void {
-        styleZeroStockRows();
-    }
-
-    // dt.on("datatable.init", () => refreshTableUI());
-    // dt.on("datatable.sort", () => setTimeout(refreshTableUI, 10));
-    // dt.on("datatable.page", () => setTimeout(refreshTableUI, 10));
-    // dt.on("datatable.search", () => setTimeout(refreshTableUI, 10));
-    // dt.on("datatable.update", () => setTimeout(refreshTableUI, 10));
-
-    setTimeout(refreshTableUI, 50);
 
 
     headers.forEach((h, index) => {
@@ -321,8 +282,6 @@ export function createDataTable<T extends Product | Sale>(
 
             setHeaders(configKey, updatedOptions);
 
-            setTimeout(refreshTableUI, 100);    
-
             settingDropdowns.forEach((otherSd) => {
                 if (otherSd === sd) {return;}
                 const otherBoxes = Array.from(otherSd.querySelectorAll<HTMLInputElement>('.product-dd'));
@@ -334,5 +293,6 @@ export function createDataTable<T extends Product | Sale>(
             });
         });
     });
+
     return dt;
 }
