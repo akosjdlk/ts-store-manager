@@ -22,7 +22,18 @@
   --color-dark_truck: #B3933A;
   --color-money: #76DD5C;
   --color-dark_money: #62BE4B
+
+  --color-danger-subtle: #fde8e8; 
+  --color-fg-danger: #9b1c1c;    
+
+  --color-success-subtle: #def7ec; 
+  --color-fg-success: #03543f;   
+
+  --color-warning-subtle: #fdf6b2; 
+  --color-fg-warning: #723b10;
 }
+
+@source inline("bg-{danger,success,warning}-subtle");
 
 .datatable-pagination ul {
   @apply flex items-center space-x-1 list-none p-0 m-0;
