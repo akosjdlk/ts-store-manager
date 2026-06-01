@@ -79,11 +79,29 @@
                 </svg>
             </button>
         </div>
-            <table>
-            </table>
+        <div class="flex flex-col justify-between h-[calc(100vh-6rem)] p-6">
+            <table></table>
+            <div class="border-t border-gray-300 dark:border-gray-700 pt-4 mt-4 bg-light_color dark:bg-dark_lighter_bg">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-3xl font-bold uppercase text-gray-500 dark:text-gray-200">Fizetendő végösszeg:</span>
+                    <span class="text-3xl font-bold text-dark_color dark:text-light_color" id="total-price">0 Ft</span>
+                </div>
+            
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-banknote"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                        <span>Készpénz</span>
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        <span>Bankkártya</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-<!-- TODO: Fizetés -->
+    <!-- TODO: Fizetés-modal + toast + errormessage if no items in cart -->
 
     <script type="module">
         import { darkMode } from "../src/main.ts"
