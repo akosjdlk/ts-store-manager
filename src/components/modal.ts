@@ -295,3 +295,132 @@ export function confirmationModal(message: string, ontrue: CallableFunction, onf
     }
   )
 }
+
+export interface ModalFiels {
+  name: string; 
+  label: string;
+  type: 'text' | 'number' | 'select';
+  options?: Array<{ value: string; label: string }>; 
+}
+
+export function ModifyModal(
+  buttonMessage: string, 
+  header: string, 
+  fields: ModalFiels[],
+  initialData?: Record<string, unknown>
+): void {
+  // const AfaSzamolas: Record<string, number> = {
+  //   "PEK": 27,  
+  //   "KON": 27, 
+  //   "FAG": 27, 
+  //   "ITA": 27, 
+  //   "FUS": 27, 
+  //   "TEJ": 5,  
+  //   "FRI": 5,  
+  //   "EDS": 27, 
+  //   "SOS": 27, 
+  //   "HUS": 5   
+  // };
+
+  const modaldiv = document.createElement('div');
+  modaldiv.classList.add("hidden", "overflow-y-auto", "overflow-x-hidden", "fixed", "top-0", "right-0", "left-0", "z-50", "justify-center", "items-center", "w-full", "md:inset-0", "h-[calc(100%-1em)]", "max-h-full");
+  modaldiv.id = "crud-modal";
+  modaldiv.tabIndex = -1;
+  const fieldsHtml = fields.map(field => {
+    const value = String(initialData?.[field.name] !== undefined ? initialData[field.name] : '');
+    if (field.type === 'select') {
+        const optionsHtml = (field.options ?? []).map(opt => 
+            `<option value="${opt.value}" ${opt.value === value ? 'selected' : ''}>${opt.label}</option>`
+        ).join('')
+        return `
+          <div class="col-span-2">
+            <label for="${field.name}" class="block mb-2.5 text-sm font-medium text-heading">
+              ${field.label}
+            </label>
+            <select id="${field.name}" name="${field.name}" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-subtle text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+              <option value="" disabled ${value === '' ? 'selected' : ''}>Select...</option>
+              ${optionsHtml}
+            </select>
+          </div>
+        `;
+    } else {
+        return `
+          <div class="relative z-0 w-full mb-5 group col-span-2">
+            <input
+              type="${field.type}"
+              name="${field.name}"
+              id="${field.name}"
+              value="${value}"
+              class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-subtle appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
+              placeholder=" "
+              required
+            />
+            <label
+              for="${field.name}"
+              class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+            >
+              ${field.label}
+            </label>
+          </div>
+        `;
+    }
+  }).join('');
+
+  modaldiv.innerHTML = `
+    <div class="relative p-4 w-full max-w-xl max-h-full">
+      <div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6 bg-white dark:bg-gray-800">
+        <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+          <h3 class="text-lg font-medium text-heading">
+            ${header}
+          </h3>
+          <button type="button" id="close-modal-btn" class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <form id="modal-form" action="#">
+          <div class="grid gap-4 grid-cols-2 py-4 md:py-6 max-w-md mx-auto">
+            ${fieldsHtml}
+          </div>
+          <div class="flex items-center space-x-4 border-t border-default pt-4 md:pt-6">
+            <button type="submit" class="inline-flex items-center text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+              <svg class="w-4 h-4 me-1.5 -ms-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+              </svg>
+              ${buttonMessage}
+            </button>
+            <button id="cancel-modal-btn" type="button" class="text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
+              Mégse
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    `;
+
+  document.body.appendChild(modaldiv);
+
+  const openModal = (): void => {
+    modaldiv.classList.remove("hidden");
+    modaldiv.classList.add("flex");
+    document.body.classList.add("overflow-hidden"); 
+  };
+
+  openModal();
+
+  const closeModal = (): void => {
+    modaldiv.classList.remove("flex");
+    modaldiv.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+    modaldiv.remove(); 
+  };
+
+  modaldiv.querySelector('#close-modal-btn')?.addEventListener('click', closeModal);
+  modaldiv.querySelector('#cancel-modal-btn')?.addEventListener('click', closeModal);
+  
+  modaldiv.querySelector('#modal-form')?.addEventListener('submit', async (e) => {
+    // TODO: új termék / szerkesztés 
+  });
+}
