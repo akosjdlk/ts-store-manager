@@ -1,7 +1,7 @@
 import { createDataTable } from "./table";
 import { fetchAllProducts } from "../api/products";
 import type { Product } from "../types/product";
-import {  ModifyModal} from "./modal";
+import { ModifyModal} from "./modal";
 import "flowbite";
 
 async function main(): Promise<void> {
@@ -15,7 +15,21 @@ async function main(): Promise<void> {
     const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown')!;
     const dropdown_mobile = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile')!;
 
-    createDataTable("checkout", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev) => {console.log(ev.currentTarget)});
+    createDataTable("checkout", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, () => {
+        ModifyModal(
+            "Mentés",              
+            "Termék módosítása",   
+            [
+                { name: "id", label: "Vonalkód", type: "text" },
+                { name: "cikkszam", label: "Cikkszám", type: "text" },
+                { name: "kategoria", label: "Kategória", type: "select", options: categoryOptions },
+                { name: "termek_nev", label: "Termék Név", type: "text" },
+                { name: "keszlet", label: "Készlet", type: "number" },
+                { name: "mertekegyseg", label: "Mértékegység", type: "text" },
+                { name: "netto_ar", label: "Nettó ár", type: "number" }
+            ]
+        );
+    });
 
     const uniqueCategories = [...new Set(products.map(p => p.kategoria))];
     const categoryOptions = uniqueCategories.map(cat => ({

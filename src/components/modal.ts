@@ -1,4 +1,5 @@
 import type { DataTable } from "simple-datatables";
+import { CreateToast } from "./toast";
 import "flowbite"
 
 // TODO: another modal for modify + add new thing
@@ -308,6 +309,7 @@ export function ModifyModal(
   header: string, 
   fields: ModalFiels[],
   initialData?: Record<string, unknown>
+  // esetleg a submit buttonnek
 ): void {
   // const AfaSzamolas: Record<string, number> = {
   //   "PEK": 27,  
@@ -420,7 +422,21 @@ export function ModifyModal(
   modaldiv.querySelector('#close-modal-btn')?.addEventListener('click', closeModal);
   modaldiv.querySelector('#cancel-modal-btn')?.addEventListener('click', closeModal);
   
-  modaldiv.querySelector('#modal-form')?.addEventListener('submit', async (e) => {
+  modaldiv.querySelector('#modal-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    closeModal();
+    confirmationModal(
+      "Biztosan menti az adatokat?", 
+      () => {
+        CreateToast("Adatok mentve", "success");
+                              
+        
+      },
+      () => { 
+        CreateToast("Adatok nem mentve", "warning");
+      }
+    )
     // TODO: új termék / szerkesztés 
   });
 }
