@@ -137,11 +137,13 @@ export function createDataTable<T extends Product | Sale>(
     modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
 ): DataTable {
     if (dataTables.has(configKey)) {
-        throw new Error("This table already exists! Use updateDataTable instead.");
+        CreateToast("Ismeretlen hiba történt!", "danger");
+        throw new Error("This table already exists!");
     }
 
     // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
     if (table === null) {
+        CreateToast("Ismeretlen hiba történt!", "danger");
         throw new Error("Table is null.")
     }
 
@@ -202,6 +204,7 @@ export function createDataTable<T extends Product | Sale>(
         
                         const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
                         if (isNaN(i)) {
+                            CreateToast("Nem sikerült megtalálni a keresett adatsort", "warning");
                             throw new Error("NO TR");
                         }
                         dt.data.data.splice(i, 1);
