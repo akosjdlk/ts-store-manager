@@ -5,7 +5,7 @@ export interface Product {
   kategoria: string;
   termek_nev: string;
   keszlet: number;
-  mertekegyseg: string; // TODO: enum
+  mertekegyseg: string;
   netto_ar: number;
   brutto_ar: number;
   afa: number;

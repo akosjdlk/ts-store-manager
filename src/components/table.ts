@@ -1,6 +1,6 @@
 import { DataTable } from "simple-datatables";
 import type { Sale } from "../types/sale";
-import type { Product } from "../types/product";
+import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 import { confirmationModal } from "./modal";
@@ -18,16 +18,12 @@ interface Cell {
 
 type CellRow = Cell[];
 
-interface DataTableConfig {
-    dataTable: DataTable;
-    storedData: CellRow[];
-}
 
 type DropdownData = Record<string, boolean>;
 
-const dataTables = new Map<string, DataTableConfig>();
+const dataTables = new Map<string, DataTable>();
 
-function getValues<T extends { id: string }>(
+export function getValues<T extends Product | Sale>(
     input: T,
     keys: Array<keyof T>,
     deleteButton: boolean,
@@ -35,7 +31,7 @@ function getValues<T extends { id: string }>(
 ): CellRow {
     const data: CellRow = [];
     keys.forEach((k) => {
-        data.push({data: input[k]} as Cell);
+        data.push({ data: input[k] } as Cell);
     });
 
     if (deleteButton || modifyButton) {
@@ -97,15 +93,15 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
             },
             classes: {
                 top: "flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4",
-                
+
                 search: "datatable-search",
                 input: "datatable-input",
 
                 dropdown: "sm:flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400",
                 selector: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg",
-                    
+
                 container: "overflow-x-auto",
-                    
+
                 bottom: "flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4 border-t border-gray-200 dark:border-gray-700",
                 info: "text-sm font-normal text-gray-400 text-gray-400",
 
@@ -118,13 +114,13 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
             sortable: sortable,
             paging: paging,
             columns: [
-                {select: headings.length - 1, sortable: false}
+                { select: headings.length - 1, sortable: false }
             ]
         }
     );
 }
 
-export function createDataTable<T extends { id: string }>(
+export function createDataTable<T extends Product | Sale>(
     configKey: string,
     table: HTMLTableElement,
     data: T[],
@@ -137,27 +133,24 @@ export function createDataTable<T extends { id: string }>(
     modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
 ): DataTable {
     if (dataTables.has(configKey)) {
-        CreateToast("Ismeretlen hiba történt!", "danger");
-        throw new Error("This table already exists!");
+        throw new Error("This table already exists! Use updateDataTable instead.");
     }
 
     // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
     if (table === null) {
-        CreateToast("Ismeretlen hiba történt!", "danger");
         throw new Error("Table is null.")
     }
 
-    const mappedData = data.map(d =>
-        {
-            const cRow = getValues(d, headers, deleteButton, modifyButtonCallback !== null)
-            if (isProduct(d) && d.keszlet < 1) {
-                cRow.forEach(td => {
-                    td.attributes ??= {};
-                    td.attributes["class"] = `${td.attributes["class"] ?? ""} !text-red-800 bg-red-600/30 dark:!text-red-300 dark:bg-red-800/40`
-                })
-            }
-            return cRow
+    const mappedData = data.map(d => {
+        const cRow = getValues(d, headers, deleteButton, modifyButtonCallback !== null)
+        if (isProduct(d) && d.keszlet < 1) {
+            cRow.forEach(td => {
+                td.attributes ??= {};
+                td.attributes["class"] = `${td.attributes["class"] ?? ""} !text-red-800 bg-red-600/30 dark:!text-red-300 dark:bg-red-800/40`
+            })
         }
+        return cRow
+    }
     );
     const mappedHeadings = headers.map(h => h.replaceAll("_", "-"));
 
@@ -174,8 +167,7 @@ export function createDataTable<T extends { id: string }>(
     setHeaders(configKey, dropdownKeys);
 
     const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
-    dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
-
+    dataTables.set(configKey, dt);
 
 
     headers.forEach((h, index) => {
@@ -186,42 +178,59 @@ export function createDataTable<T extends { id: string }>(
 
     if (deleteButton) {
         const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
-        deleteButtons.forEach((btn) => {
-            btn.onclick = (): void => {
-                confirmationModal(
-                    "Biztosan törli a terméket?", 
-                    async () => {
-                        CreateToast("Termék törölve", "danger");
-                        
-                        const id = btn.dataset["id"] ?? null;
-                        if (!id) {return;}
-        
-                        if (isProduct(data[0])) {
-                            await deleteProduct(id);
-                        } else {
-                            await deleteSale(id);
-                        }
-        
-                        const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                        if (isNaN(i)) {
-                            CreateToast("Nem sikerült megtalálni a keresett adatsort", "warning");
-                            throw new Error("NO TR");
-                        }
-                        dt.data.data.splice(i, 1);
-                        dataTables.get(configKey)?.storedData.splice(i, 1);
-                        dt.update();
-                    },
-                    () => { /* empty */ }
-                );
-            };
-        });
+        dt.on("datatable.update", () => { addDeleteCallbacks(); });
+        dt.on("datatable.page", () => { addDeleteCallbacks(); });
+        addDeleteCallbacks();
+
+        function addDeleteCallbacks(): void {
+            deleteButtons.forEach((btn) => {
+                btn.onclick = (): void => {
+
+                    confirmationModal(
+                        "Biztosan törli az adat sort?",
+                        // eslint-disable-next-line sonarjs/no-nested-functions
+                        async () => {
+                            CreateToast("Sor törölve", "success");
+
+                            const id = btn.dataset["id"] ?? null;
+                            if (!id) {
+                                return;
+                            }
+
+                            if (isProduct(data[0])) {
+                                await deleteProduct(id);
+                            } else {
+                                await deleteSale(id);
+                            }
+
+                            const i = Number(btn.closest("tr")?.dataset["index"]);
+                            if (isNaN(i)) {
+                                throw new Error("NO TR");
+                            }
+                            dt.data.data.splice(i, 1);
+                            dt.update();
+                        },
+                        // eslint-disable-next-line sonarjs/no-nested-functions
+                        () => {
+                            /* empty */
+                        },
+                    );
+                };
+            });
+        }
     }
 
     if (modifyButtonCallback !== null) {
-        const modifyButtons = table.querySelectorAll<HTMLButtonElement>(".modify-button");
-        modifyButtons.forEach((btn) => {
-            btn.onclick = modifyButtonCallback;
-        });
+        dt.on("datatable.update", () => { addModifyCallbacks(); });
+        dt.on("datatable.page", () => { addModifyCallbacks(); });
+        addModifyCallbacks();
+
+        function addModifyCallbacks(): void {
+            const modifyButtons = table.querySelectorAll<HTMLButtonElement>(".modify-button");
+            modifyButtons.forEach((btn) => {
+                btn.onclick = modifyButtonCallback;
+            });
+        }
     }
 
     if (!settingDropdowns || settingDropdowns.length === 0) {
@@ -244,7 +253,7 @@ export function createDataTable<T extends { id: string }>(
 
         sd.addEventListener('change', (event) => {
             const target = event.target as HTMLInputElement;
-            if (!target.classList.contains('product-dd')) {return;}
+            if (!target.classList.contains('product-dd')) { return; }
 
             const currentBoxes = Array.from(sd.querySelectorAll<HTMLInputElement>('.product-dd'));
             const anyChecked = currentBoxes.some(box => box.checked);
@@ -273,7 +282,7 @@ export function createDataTable<T extends { id: string }>(
             setHeaders(configKey, updatedOptions);
 
             settingDropdowns.forEach((otherSd) => {
-                if (otherSd === sd) {return;}
+                if (otherSd === sd) { return; }
                 const otherBoxes = Array.from(otherSd.querySelectorAll<HTMLInputElement>('.product-dd'));
                 // eslint-disable-next-line sonarjs/no-nested-functions
                 otherBoxes.forEach((otherBox) => {
