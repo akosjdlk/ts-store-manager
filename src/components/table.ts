@@ -1,6 +1,6 @@
 import { DataTable } from "simple-datatables";
 import type { Sale } from "../types/sale";
-import { isProduct, type Product } from "../types/product";
+import type { Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 
@@ -16,7 +16,7 @@ type DropdownData = Record<string, boolean>;
 
 const dataTables = new Map<string, DataTableConfig>();
 
-function getValues<T extends Product | Sale>(
+function getValues<T extends { id: string }>(
     input: T,
     keys: Array<keyof T>,
     deleteButton: boolean,
@@ -110,7 +110,7 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
     );
 }
 
-export function createDataTable<T extends Product | Sale>(
+export function createDataTable<T extends { id: string }>(
     configKey: string,
     table: HTMLTableElement,
     data: T[],
@@ -120,10 +120,12 @@ export function createDataTable<T extends Product | Sale>(
     sortable = true,
     paging = false,
     deleteButton = true,
-    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
+    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null,
+    deleteButtonCallback: ((id: string) => Promise<void> | void) | null = null
 ): void {
     if (dataTables.has(configKey)) {
-        throw new Error("This table already exists! Use updateDataTable instead.");
+        dataTables.get(configKey)?.dataTable.destroy();
+        dataTables.delete(configKey);
     }
 
     const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
@@ -158,10 +160,15 @@ export function createDataTable<T extends Product | Sale>(
                 const id = btn.dataset["id"] ?? null;
                 if (!id) {return;}
 
-                if (isProduct(data[0])) {
-                    await deleteProduct(id);
+                if (deleteButtonCallback !== null) {
+                    await deleteButtonCallback(id);
                 } else {
-                    await deleteSale(id);
+                    const firstRow = data[0] as Product | Sale | undefined;
+                    if (firstRow && "cikkszam" in firstRow) {
+                        await deleteProduct(id);
+                    } else {
+                        await deleteSale(id);
+                    }
                 }
 
                 const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
