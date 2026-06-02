@@ -1,6 +1,6 @@
 import { DataTable } from "simple-datatables";
 import type { Sale } from "../types/sale";
-import { isProduct, type Product } from "../types/product";
+import type { Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 import { confirmationModal } from "./modal";
@@ -27,7 +27,7 @@ type DropdownData = Record<string, boolean>;
 
 const dataTables = new Map<string, DataTableConfig>();
 
-function getValues<T extends Product | Sale>(
+function getValues<T extends { id: string }>(
     input: T,
     keys: Array<keyof T>,
     deleteButton: boolean,
@@ -124,7 +124,7 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
     );
 }
 
-export function createDataTable<T extends Product | Sale>(
+export function createDataTable<T extends { id: string }>(
     configKey: string,
     table: HTMLTableElement,
     data: T[],

@@ -11,49 +11,94 @@ const stockupSubmitBtn = document.getElementById('stockup_submit_btn') as HTMLBu
 const add_stockup_form = document.getElementById('add_stockup_form') as HTMLFormElement
 const confirmStockupBtn = document.getElementById('confirmstockupbtn') as HTMLButtonElement;
 
-const editedProducts: Array<{ barcode: string, currentQuantity: number, addToQuantity: number }> = []
+interface StockupRow {
+    id: string,
+    termek_vonalkod: string,
+    jelenlegi_keszlet: number,
+    bevetelezett_db: number,
+    varhato_keszlet: number
+}
+
+const STOCKUP_STORAGE_KEY = 'editedProducts';
+const STOCKUP_HEADERS: Array<keyof StockupRow> = ['termek_vonalkod', 'jelenlegi_keszlet', 'bevetelezett_db', 'varhato_keszlet'];
+
+function createRowId(): string {
+    return crypto.randomUUID();
+}
+
+function toNumber(value: unknown): number {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getStoredRows(): StockupRow[] {
+    const rawRows = localStorage.getItem(STOCKUP_STORAGE_KEY);
+    if (!rawRows) {
+        return [];
+    }
+
+    return JSON.parse(rawRows) as StockupRow[];
+}
+
+function saveRows(rows: StockupRow[]): void {
+    localStorage.setItem(STOCKUP_STORAGE_KEY, JSON.stringify(rows));
+}
 
 function renderTable(): void {
-        let productsToUpdate: Array<{ barcode: string, currentQuantity: number, addToQuantity: number }> = [];
-        const editedProductsFromStorage = localStorage.getItem('editedProducts');
-        if (editedProductsFromStorage) {
-                productsToUpdate = JSON.parse(editedProductsFromStorage) as Array<{ barcode: string, currentQuantity: number, addToQuantity: number }>;
-        } else if (editedProducts.length > 0) {
-                productsToUpdate = editedProducts.slice();
-        }
-        const table = document.querySelector('table')!;
-        const p = productsToUpdate[0];
-        const headers = p ? Object.keys(p) as Array<keyof typeof p> : [];
-        const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown')!;
-        const dropdown_mobile = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile')!;
+    const rows = getStoredRows();
+    const table = document.querySelector('table')!;
+    const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown')!;
+    const dropdownMobile = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile')!;
 
-        createDataTable("stockup", table, productsToUpdate as unknown as any[], headers, [dropdown, dropdown_mobile], true, true, true, true, (ev) => {console.log(ev.currentTarget)});
+    createDataTable("stockup", table, rows, STOCKUP_HEADERS, [dropdown, dropdownMobile], true, true, true, true, null, (id) => {
+        const filteredRows = rows.filter((row) => row.id !== id);
+        saveRows(filteredRows);
+    });
 }
 
 stockupSubmitBtn.addEventListener('click', async () => {
-        const productBarcode = (document.getElementById('barcode') as HTMLInputElement).value;
-        const addToProductQuantity = Number((document.getElementById('quantity') as HTMLInputElement).value);
+    const productBarcode = (document.getElementById('barcode') as HTMLInputElement).value.trim();
+    const addToProductQuantity = toNumber((document.getElementById('quantity') as HTMLInputElement).value);
 
-        const product = await fetchProductById(productBarcode);
-        
-        editedProducts.push({ barcode: productBarcode, currentQuantity: product.keszlet, addToQuantity: addToProductQuantity });
-        localStorage.setItem('editedProducts', JSON.stringify(editedProducts));
+    if (!productBarcode || addToProductQuantity <= 0) {
+        return;
+    }
 
-        add_stockup_form.reset();
-        renderTable();
+    const product = await fetchProductById(productBarcode);
+
+    const storedRows = getStoredRows();
+    const nextRows = [
+        ...storedRows,
+        {
+            id: createRowId(),
+            termek_vonalkod: productBarcode,
+            jelenlegi_keszlet: product.keszlet,
+            bevetelezett_db: addToProductQuantity,
+            varhato_keszlet: product.keszlet + addToProductQuantity
+        }
+    ];
+
+    saveRows(nextRows);
+
+    add_stockup_form.reset();
+    renderTable();
 });
 
 confirmStockupBtn.addEventListener('click', async () => {
-        const editedProductsFromStorage = localStorage.getItem('editedProducts');
-        if (editedProductsFromStorage) {
-                const productsToUpdate = JSON.parse(editedProductsFromStorage) as Array<{ barcode: string, currentQuantity: number, addToQuantity: number }>;
-                for (const product of productsToUpdate) {
-                        const productDetails = await fetchProductById(product.barcode);
-                        productDetails.keszlet += product.addToQuantity;
+    const productsToUpdate = getStoredRows();
+    if (productsToUpdate.length === 0) {
+        return;
+    }
 
-                        await updateProduct( product.barcode, productDetails );
-                }
-                localStorage.removeItem('editedProducts');
-                renderTable();
-        }
-});    
+    for (const product of productsToUpdate) {
+        const productDetails = await fetchProductById(product.termek_vonalkod);
+        productDetails.keszlet += product.bevetelezett_db;
+
+        await updateProduct(product.termek_vonalkod, productDetails);
+    }
+
+    saveRows([]);
+    renderTable();
+});
+
+renderTable();
