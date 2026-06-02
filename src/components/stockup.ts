@@ -2,20 +2,33 @@ import { initFlowbite } from 'flowbite'
 
 import { fetchProductById, updateProduct } from '../api/products';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { fetchProductById, updateProduct } from '../api/products';
+import { createDataTable } from "./table";
 
-=======
->>>>>>> e4d2c36 (stocking base)
-=======
->>>>>>> 79b38ae2c37613b3e2d571e3cb3eabe0008e1dfd
+
 initFlowbite()
 
 const stockupSubmitBtn = document.getElementById('stockup_submit_btn') as HTMLButtonElement
 const add_stockup_form = document.getElementById('add_stockup_form') as HTMLFormElement
+const confirmStockupBtn = document.getElementById('confirmstockupbtn') as HTMLButtonElement;
 
 const editedProducts: Array<{ barcode: string, currentQuantity: number, addToQuantity: number }> = []
+
+function renderTable(): void {
+        let productsToUpdate: Array<{ barcode: string, currentQuantity: number, addToQuantity: number }> = [];
+        const editedProductsFromStorage = localStorage.getItem('editedProducts');
+        if (editedProductsFromStorage) {
+                productsToUpdate = JSON.parse(editedProductsFromStorage) as Array<{ barcode: string, currentQuantity: number, addToQuantity: number }>;
+        } else if (editedProducts.length > 0) {
+                productsToUpdate = editedProducts.slice();
+        }
+        const table = document.querySelector('table')!;
+        const p = productsToUpdate[0];
+        const headers = p ? Object.keys(p) as Array<keyof typeof p> : [];
+        const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown')!;
+        const dropdown_mobile = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile')!;
+
+        createDataTable("stockup", table, productsToUpdate as unknown as any[], headers, [dropdown, dropdown_mobile], true, true, true, true, (ev) => {console.log(ev.currentTarget)});
+}
 
 stockupSubmitBtn.addEventListener('click', async () => {
         const productBarcode = (document.getElementById('barcode') as HTMLInputElement).value;
@@ -27,9 +40,9 @@ stockupSubmitBtn.addEventListener('click', async () => {
         localStorage.setItem('editedProducts', JSON.stringify(editedProducts));
 
         add_stockup_form.reset();
+        renderTable();
 });
 
-const confirmStockupBtn = document.getElementById('confirmstockupbtn') as HTMLButtonElement;
 confirmStockupBtn.addEventListener('click', async () => {
         const editedProductsFromStorage = localStorage.getItem('editedProducts');
         if (editedProductsFromStorage) {
@@ -41,5 +54,6 @@ confirmStockupBtn.addEventListener('click', async () => {
                         await updateProduct( product.barcode, productDetails );
                 }
                 localStorage.removeItem('editedProducts');
+                renderTable();
         }
 });    
