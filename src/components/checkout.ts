@@ -20,18 +20,20 @@ async function main(filter: Record<string, string | null>): Promise<void> {
                 type: "table",
                 table: dt,
                 id: "table"
-            },
-            {
-                type: "number", id: "number"
             }
         ],
-        onSubmit: (data: Record<string, object>): void => {
+        footerInput: {
+            id: "number",
+            label: "Mennyiség",
+            type: "number"
+        },
+        onSubmit: (data: Record<string, unknown>): void => {
             if (!data["table"]) {
                 alert("Nincs kiválaszott sor")
                 return;
             }
             if (!data["number"]) {
-                alert("Kérjük, djon meg egy mennyiséget!í")
+                alert("Kérjük, adjon meg egy mennyiséget!")
                 return;
             }
             const table = data["table"] as HTMLTableRowElement;

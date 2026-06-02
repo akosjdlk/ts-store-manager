@@ -16,7 +16,7 @@
             const products = await fetchAllProducts();
             const table = document.querySelector('table');
 
-            createDataTable("test", table, ["id"], products, null, true, true, true, true, (ev) => {console.log(ev.currentTarget)});
+            createDataTable("test", table, products, ["id"], null, true, true, true, true, (ev) => {console.log(ev.currentTarget)});
         }
 
         await main();
