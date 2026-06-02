@@ -1,4 +1,5 @@
 import type { Product } from "../types/product";
+import { CreateToast } from "../components/toast";
 
 const PRODUCTS_ENDPOINT = "/api/products";
 
@@ -6,6 +7,7 @@ export async function fetchFilteredProducts(filters: Record<string, string | nul
     const queryString = new URLSearchParams(Object.entries(filters).filter((entry): entry is [string, string] => entry[1] !== null)).toString();
     const response = await fetch(`${PRODUCTS_ENDPOINT}?${queryString}`);
     if (!response.ok) {
+        CreateToast("Nem sikerült lekérni az adatokat", "danger");
         throw new Error("Failed to fetch products");
     }
     return response.json() as Promise<Product[]>;
@@ -15,6 +17,7 @@ export async function fetchAllProducts(): Promise<Product[]> {
     const response = await fetch(PRODUCTS_ENDPOINT);
 
     if (!response.ok) {
+        CreateToast("Nem sikerült lekérni az adatokat", "danger");
         throw new Error(`Failed to fetch products`);
     }
     return response.json() as Promise<Product[]>;
@@ -23,6 +26,7 @@ export async function fetchAllProducts(): Promise<Product[]> {
 export async function fetchProductById(id: string): Promise<Product> {
     const response = await fetch(`${PRODUCTS_ENDPOINT}/${id}`);
     if (!response.ok) {
+        CreateToast(`Nem sikerült lekérni az ${id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to fetch product with id ${id}`);
     }
     return response.json() as Promise<Product>;
@@ -37,6 +41,7 @@ export async function createProduct(product: Product): Promise<Product> {
         body: JSON.stringify(product),
     });
     if (!response.ok) {
+        CreateToast("Nem sikerült hozzáadni az adatot az adatbázishoz", "danger");
         throw new Error("Failed to create product");
     }
     return response.json() as Promise<Product>;
@@ -51,6 +56,7 @@ export async function updateProduct(id: string, product: Product): Promise<Produ
         body: JSON.stringify(product),
     });
     if (!response.ok) {
+        CreateToast(`Nem sikerült frissíteni az ${id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to update product with id ${id}`);
     }
     return response.json() as Promise<Product>;
@@ -61,6 +67,7 @@ export async function deleteProduct(id: string | Product): Promise<void> {
         method: "DELETE",
     });
     if (!response.ok) {
+        CreateToast(`Nem sikerült törölni az ${typeof id === "string" ? id : id.id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to delete product with id ${typeof id === "string" ? id : id.id}`);
     }
 }

@@ -1,4 +1,5 @@
 import type { Sale } from "../types/sale";
+import { CreateToast } from "../components/toast";
 
 const SALES_ENDPOINT = "/api/sales";
 
@@ -6,6 +7,7 @@ export async function fetchFilteredSales(filters: Record<string, string>): Promi
     const queryString = new URLSearchParams(filters).toString();
     const response = await fetch(`${SALES_ENDPOINT}?${queryString}`);
     if (!response.ok) {
+        CreateToast("Nem sikerült lekérni az adatokat", "danger");
         throw new Error("Failed to fetch sales");
     }
     return response.json() as Promise<Sale[]>;
@@ -14,6 +16,7 @@ export async function fetchFilteredSales(filters: Record<string, string>): Promi
 export async function fetchAllSales(): Promise<Sale[]> {
     const response = await fetch(SALES_ENDPOINT);
     if (!response.ok) {
+        CreateToast("Nem sikerült lekérni az adatokat", "danger");
         throw new Error(`Failed to fetch products`);
     }
     return response.json() as Promise<Sale[]>;
@@ -22,6 +25,7 @@ export async function fetchAllSales(): Promise<Sale[]> {
 export async function fetchSaleById(id: string): Promise<Sale> {
     const response = await fetch(`${SALES_ENDPOINT}/${id}`);
     if (!response.ok) {
+        CreateToast(`Nem sikerült lekérni az ${id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to fetch sale with id ${id}`);
     }
     return response.json() as Promise<Sale>;
@@ -36,6 +40,7 @@ export async function createSale(sale: Sale): Promise<Sale> {
         body: JSON.stringify(sale),
     });
     if (!response.ok) {
+        CreateToast("Nem sikerült hozzáadni az adatot az adatbázishoz", "danger");
         throw new Error("Failed to create sale");
     }
     return response.json() as Promise<Sale>;
@@ -50,6 +55,7 @@ export async function updateSale(id: string, sale: Sale): Promise<Sale> {
         body: JSON.stringify(sale),
     });
     if (!response.ok) {
+        CreateToast(`Nem sikerült frissíteni az ${id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to update sale with id ${id}`);
     }
     return response.json() as Promise<Sale>;
@@ -60,6 +66,7 @@ export async function deleteSale(id: string | Sale): Promise<void> {
         method: "DELETE",
     });
     if (!response.ok) {
+        CreateToast(`Nem sikerült törölni az ${typeof id === "string" ? id : id.id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to delete sale with id ${typeof id === "string" ? id : id.id}`);
     }
 }
