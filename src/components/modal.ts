@@ -308,8 +308,8 @@ export function ModifyModal(
   buttonMessage: string, 
   header: string, 
   fields: ModalFiels[],
-  initialData?: Record<string, unknown>
-  // esetleg a submit buttonnek
+  initialData?: Record<string, unknown>,
+  onSubmit?: (data: Record<string, string>) => void
 ): void {
   // const AfaSzamolas: Record<string, number> = {
   //   "PEK": 27,  
@@ -425,18 +425,19 @@ export function ModifyModal(
   modaldiv.querySelector('#modal-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    // Gather data simply
+    const formElement = e.currentTarget as HTMLFormElement;
+    const formDataInstance = new FormData(formElement);
+    const data: Record<string, string> = {};
+    formDataInstance.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+  
     closeModal();
-    confirmationModal(
-      "Biztosan menti az adatokat?", 
-      () => {
-        CreateToast("Adatok mentve", "success");
-                              
-        
-      },
-      () => { 
-        CreateToast("Adatok nem mentve", "warning");
-      }
-    )
+  
+    if (onSubmit) {
+      onSubmit(data);
+    }
     // TODO: új termék / szerkesztés 
   });
 }

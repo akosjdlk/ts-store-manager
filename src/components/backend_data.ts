@@ -1,7 +1,8 @@
 import { createDataTable } from "./table";
 import { fetchAllProducts } from "../api/products";
 import type { Product } from "../types/product";
-import { ModifyModal} from "./modal";
+import { ModifyModal, confirmationModal } from "./modal";
+import { CreateToast } from "./toast";
 import "flowbite";
 
 async function main(): Promise<void> {
@@ -27,7 +28,21 @@ async function main(): Promise<void> {
                 { name: "keszlet", label: "Készlet", type: "number" },
                 { name: "mertekegyseg", label: "Mértékegység", type: "text" },
                 { name: "netto_ar", label: "Nettó ár", type: "number" }
-            ]
+            ],
+            undefined,
+            () => {
+                confirmationModal(
+                    "Biztosan menti az adatokat?", 
+                    () => {
+                      CreateToast("Adatok mentve", "success");
+
+                    
+                    },
+                    () => { 
+                      CreateToast("Adatok nem mentve", "warning");
+                    }
+                )
+            }
         );
     });
 
