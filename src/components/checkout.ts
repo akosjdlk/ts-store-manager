@@ -258,7 +258,7 @@ function generateCheckoutTable(manager: CartManager): DataTable {
                     const ujMennyiseg = Number(validatedData["mennyiseg"]);
     
                     if (isNaN(ujMennyiseg) || ujMennyiseg <= 0) {
-                        // TODO: Toast
+                        CreateToast("Kérjük, adjon meg egy érvényes mennyiséget!", "warning");
                         alert("Kérjük, adjon meg egy érvényes mennyiséget!");
                         return;
                     }
@@ -294,7 +294,7 @@ function generateCheckoutTable(manager: CartManager): DataTable {
     
 function validateEntryData(data: Record<string, unknown>): Record<string, unknown> {
     if (typeof data["mennyiseg"] !== "string" || data["mennyiseg"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'mennyiseg' mező kötelező és nem lehet üres.", "danger");
         throw new Error("A 'mennyiseg' mező kötelező és nem lehet üres.");
     }
 
