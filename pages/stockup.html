@@ -9,12 +9,12 @@
 <body class="bg-light_color dark:bg-dark_lighter_bg">
     <div class="bg-light_header dark:bg-dark_color h-24 drop-shadow-lg flex flex-row items-center p-3 w-full relative">
         <div class="hidden md:flex flex-row items-center space-x-5">
-            <a href="raktar_charts.html">
+            <a href="index.html">
                 <div class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-house-icon lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                 </div>
             </a>
-            <a href="index.html">
+            <a href="backend_charts.html">
                 <div class="p-2 text-light_color bg-dark_color dark:bg-light_color dark:text-dark_color rounded-full transition duration-300 ease-in-out hover:bg-darker hover:dark:bg-darker_light">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-14 h-14 lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
                 </div>
@@ -33,11 +33,11 @@
             </button>
 
             <div id="dropdown-menu" class="hidden absolute left-0 top-14 bg-light_header dark:bg-dark_color border border-light_color dark:border-darker rounded-xl shadow-xl p-3 flex flex-col space-y-3 z-50 min-w-[180px]">
-                <a href="raktar_charts.html" class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color">
+                <a href="index.html" class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                     <span class="font-medium text-sm">Főoldal</span>
                 </a>
-                <a href="index.html" class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color">
+                <a href="backend_charts.html" class="flex items-center space-x-3 p-2 hover:bg-light_color hover:dark:bg-darker rounded-lg text-dark_color dark:text-light_color">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
                     <span class="font-medium text-sm">Kijelentkezés</span>
                 </a>
@@ -57,7 +57,12 @@
         </div>        
     </div>
 
-    
+    <table></table>
+
+    <button id="confirmstockupbtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Submit
+    </button>
+
     <div id="stockup_modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center">
         <div class="relative w-full max-w-2xl max-h-full">
             <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
@@ -67,23 +72,22 @@
                     </h3>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="stockup_modal">
                         <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
-                        <span class="sr-only">Close modal</span>
+                        <span class="sr-only">Mégsem</span>
                     </button>
                 </div>
-                <form action="#">
+                <form id="add_stockup_form" class="flex flex-col gap-4">
                     <div class="grid gap-4 grid-cols-2 p-4 md:p-5">
                         <div class="col-span-2">
                             <label for="barcode" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Termék vonalkód</label>
-                            <input type="text" name="barcode" id="barcode" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Type product barcode" required="">
+                            <input type="text" id="barcode" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required="">
                         </div>
                         <div class="col-span-2">
                             <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bevételezett darab</label>
-                            <input type="text" name="quantity" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Type quantity" required="">
+                            <input type="text" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required="">
                         </div>
                     </div>
                     <div class="flex items-center p-4 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600 md:p-5">
-                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <svg class="w-4 h-4 me-1.5 -ms-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/></svg>
+                        <button id="stockup_submit_btn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Megerősítés
                         </button>
                         <button data-modal-hide="stockup_modal" type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Mégsem</button>
@@ -92,6 +96,7 @@
             </div>
         </div>
     </div>
+
 
     <script type="module">
       import { darkMode, mobileView } from "../src/main.ts";
