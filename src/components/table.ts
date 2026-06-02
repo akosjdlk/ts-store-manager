@@ -203,9 +203,8 @@ export function createDataTable<T extends Product | Sale>(
                                 await deleteSale(id);
                             }
 
-                            const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
+                            const i = Number(btn.closest("tr")?.dataset["index"]);
                             if (isNaN(i)) {
-                                 
                                 throw new Error("NO TR");
                             }
                             dt.data.data.splice(i, 1);

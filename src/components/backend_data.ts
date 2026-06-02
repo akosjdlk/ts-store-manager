@@ -23,9 +23,12 @@ async function main(): Promise<void> {
         label: cat,
     }));
 
-    const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev) => {
-        const product = products.find((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
-        new CustomModal({
+    const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev): void => {
+        const productIndex = products.findIndex((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
+        const product = products[productIndex];
+        console.log(product);
+        const rowIndex = Number((ev.currentTarget as HTMLButtonElement)?.closest("tr")?.dataset["index"]);
+        const modal = new CustomModal({
             submitText: "Mentés",
             title: "Termék módosítása",
             inputs: [
@@ -40,13 +43,20 @@ async function main(): Promise<void> {
             footerInput: null,
             onSubmit: async (data): Promise<void> => {
                 const validatedProduct = validateProductData(data);
-                await updateProduct(validatedProduct.id, validatedProduct);
-                dt.insert({ data: [getValues(validatedProduct, headers, true, true)]});
+
+                products[productIndex] = await updateProduct(validatedProduct.id, validatedProduct);
+
+                dt.insert({ data: [getValues(validatedProduct, headers, true, true)] });
+                dt.data.data[rowIndex] = dt.data.data[dt.data.data.length - 1]!;
+
                 dt.update();
                 CreateToast("Termék módosítva", "success");
             }
-        }).open();
+        });
+        modal.open();
     });
+
+
 
 
     const openModalHandler = (): void => {
