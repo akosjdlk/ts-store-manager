@@ -23,7 +23,7 @@ export async function fetchAllSales(): Promise<Sale[]> {
 }
 
 export async function fetchSaleById(id: string): Promise<Sale> {
-    const response = await fetch(`${SALES_ENDPOINT}/${id}`);
+    const response = await fetch(`${SALES_ENDPOINT}/${id}`, { cache: "no-store" });
     if (!response.ok) {
         CreateToast(`Nem sikerült lekérni az ${id} azonosítójú adatot`, "danger");
         throw new Error(`Failed to fetch sale with id ${id}`);

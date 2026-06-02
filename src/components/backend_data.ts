@@ -26,7 +26,6 @@ async function main(): Promise<void> {
     const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev): void => {
         const productIndex = products.findIndex((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
         const product = products[productIndex];
-        const rowIndex = Number((ev.currentTarget as HTMLButtonElement | null)?.closest("tr")?.dataset["index"]);
 
         new CustomModal({
             submitText: "Mentés",
@@ -45,11 +44,9 @@ async function main(): Promise<void> {
                 const validatedProduct = validateProductData(data);
 
                 products[productIndex] = await updateProduct(validatedProduct.id, validatedProduct);
+                dt.rows.updateRow(productIndex, getValues(validatedProduct, headers, true, true))
 
-                dt.insert({ data: [getValues(validatedProduct, headers, true, true)] });
-                dt.data.data[rowIndex] = dt.data.data[dt.data.data.length - 1]!;
-
-                dt.update();
+                dt.update();  // TODO: kell?
                 CreateToast("Termék módosítva", "success");
             }
         }).open();
@@ -94,24 +91,31 @@ async function main(): Promise<void> {
 
 function validateProductData(data: Record<string, unknown>): Product {
     if (typeof data["id"] !== "string" || data["id"].trim() === "") {
+        // TODO: toast
         throw new Error("A 'id' mező kötelező és nem lehet üres.");
     }
     if (typeof data["cikkszam"] !== "string" || data["cikkszam"].trim() === "") {
+        // TODO: toast
         throw new Error("A 'cikkszam' mező kötelező és nem lehet üres.");
     }
     if (typeof data["kategoria"] !== "string" || data["kategoria"].trim() === "") {
+        // TODO: toast
         throw new Error("A 'kategoria' mező kötelező és nem lehet üres.");
     }
     if (typeof data["termek_nev"] !== "string" || data["termek_nev"].trim() === "") {
+        // TODO: toast
         throw new Error("A 'termek_nev' mező kötelező és nem lehet üres.");
     }
     if (typeof data["keszlet"] !== "string" || isNaN(Number(data["keszlet"]))) {
+        // TODO: toast
         throw new Error("A 'keszlet' mező kötelező és számnak kell lennie.");
     }
     if (typeof data["mertekegyseg"] !== "string" || data["mertekegyseg"].trim() === "") {
+        // TODO: toast
         throw new Error("A 'mertekegyseg' mező kötelező és nem lehet üres.");
     }
     if (typeof data["netto_ar"] !== "string" || isNaN(Number(data["netto_ar"]))) {
+        // TODO: toast
         throw new Error("A 'netto_ar' mező kötelező és számnak kell lennie.");
     }
 

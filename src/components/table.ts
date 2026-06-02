@@ -1,12 +1,13 @@
 import { DataTable } from "simple-datatables";
-import type { Sale } from "../types/sale";
+import { isSale, type Sale } from "../types/sale";
 import { isProduct, type Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
 import { confirmationModal } from "./modal";
 import { CreateToast } from "./toast";
+import type { SaleEntry } from "../types/sale_entry";
 
-interface Cell {
+export interface Cell {
     data: string;
     text?: string;
     order?: string | number;
@@ -16,14 +17,14 @@ interface Cell {
     };
 }
 
-type CellRow = Cell[];
+export type CellRow = Cell[];
 
 
 type DropdownData = Record<string, boolean>;
 
 const dataTables = new Map<string, DataTable>();
 
-export function getValues<T extends Product | Sale>(
+export function getValues<T extends Product | Sale | SaleEntry>(
     input: T,
     keys: Array<keyof T>,
     deleteButton: boolean,
@@ -35,7 +36,7 @@ export function getValues<T extends Product | Sale>(
     });
 
     if (deleteButton || modifyButton) {
-        data.push({ data: getActionButtons(input.id, deleteButton, modifyButton) });
+        data.push({ data: getActionButtons(input.id!, deleteButton, modifyButton) });
     }
 
     return data;
@@ -120,7 +121,7 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
     );
 }
 
-export function createDataTable<T extends Product | Sale>(
+export function createDataTable<T extends Product | Sale | SaleEntry>(
     configKey: string,
     table: HTMLTableElement,
     data: T[],
@@ -130,7 +131,7 @@ export function createDataTable<T extends Product | Sale>(
     sortable = true,
     paging = false,
     deleteButton = true,
-    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
+    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null,
 ): DataTable {
     if (dataTables.has(configKey)) {
         throw new Error("This table already exists! Use updateDataTable instead.");
@@ -190,25 +191,33 @@ export function createDataTable<T extends Product | Sale>(
                         "Biztosan törli az adat sort?",
                         // eslint-disable-next-line sonarjs/no-nested-functions
                         async () => {
-                            CreateToast("Sor törölve", "success");
-
                             const id = btn.dataset["id"] ?? null;
                             if (!id) {
                                 return;
                             }
-
+                            
                             if (isProduct(data[0])) {
                                 await deleteProduct(id);
-                            } else {
+                            } 
+                            else if (isSale(data)){
                                 await deleteSale(id);
                             }
-
+                            else {
+                                const configKey = "cartItems"; 
+                                const localData = JSON.parse(localStorage.getItem(configKey) ?? "[]") as SaleEntry[];
+                                
+                                const filteredData = localData.filter(item => item.id !== id);
+                                
+                                localStorage.setItem(configKey, JSON.stringify(filteredData));
+                            }
+                            
                             const i = Number(btn.closest("tr")?.dataset["index"]);
                             if (isNaN(i)) {
                                 throw new Error("NO TR");
                             }
-                            dt.data.data.splice(i, 1);
+                            dt.rows.remove(i)
                             dt.update();
+                            CreateToast("Sor törölve", "success");
                         },
                         // eslint-disable-next-line sonarjs/no-nested-functions
                         () => {

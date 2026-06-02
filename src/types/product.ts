@@ -11,8 +11,8 @@ export interface Product {
   afa: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isProduct(p: any): p is Product {
+export function isProduct(p: unknown): p is Product {
+  const prod = (p as Product)
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison
-  return (p as Product).cikkszam !== undefined;
+  return prod.cikkszam !== undefined && prod.keszlet !== undefined;
 }

@@ -5505,10 +5505,11 @@
         {
             "id": "1",
             "date": "2026-05-35",
-            "products": {
+            "products": [{
                 "productId":  "5991111111008",
+                "brutto_ar": 300,
                 "quantity": 2
-            },
+            }],
             "bruttoOsszeg": 4300
         }
     ]
