@@ -91,31 +91,31 @@ async function main(): Promise<void> {
 
 function validateProductData(data: Record<string, unknown>): Product {
     if (typeof data["id"] !== "string" || data["id"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'id' mező kötelező és nem lehet üres.", "warning");
         throw new Error("A 'id' mező kötelező és nem lehet üres.");
     }
     if (typeof data["cikkszam"] !== "string" || data["cikkszam"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'cikkszam' mező kötelező és nem lehet üres.", "warning");
         throw new Error("A 'cikkszam' mező kötelező és nem lehet üres.");
     }
     if (typeof data["kategoria"] !== "string" || data["kategoria"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'kategoria' mező kötelező és nem lehet üres.", "warning");
         throw new Error("A 'kategoria' mező kötelező és nem lehet üres.");
     }
     if (typeof data["termek_nev"] !== "string" || data["termek_nev"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'termek_nev' mező kötelező és nem lehet üres.", "warning");
         throw new Error("A 'termek_nev' mező kötelező és nem lehet üres.");
     }
     if (typeof data["keszlet"] !== "string" || isNaN(Number(data["keszlet"]))) {
-        // TODO: toast
+        CreateToast("A 'keszlet' mező kötelező és számnak kell lennie.", "warning");
         throw new Error("A 'keszlet' mező kötelező és számnak kell lennie.");
     }
     if (typeof data["mertekegyseg"] !== "string" || data["mertekegyseg"].trim() === "") {
-        // TODO: toast
+        CreateToast("A 'mertekegyseg' mező kötelező és nem lehet üres.", "warning");
         throw new Error("A 'mertekegyseg' mező kötelező és nem lehet üres.");
     }
     if (typeof data["netto_ar"] !== "string" || isNaN(Number(data["netto_ar"]))) {
-        // TODO: toast
+        CreateToast("A 'netto_ar' mező kötelező és számnak kell lennie.", "warning");
         throw new Error("A 'netto_ar' mező kötelező és számnak kell lennie.");
     }
 
