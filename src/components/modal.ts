@@ -46,6 +46,7 @@ export interface TrackingInput {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getValue: () => any;
 }
+
 export class CustomModal {
 	private id: string;
 	private title: string;
@@ -61,33 +62,25 @@ export class CustomModal {
 	private selectedTableRow: HTMLTableRowElement | null = null;
 
 	constructor(options: ModalOptions) {
-		this.id =
-			options.id ?? `modal-${Math.random().toString(36).substring(2, 9)}`;
+		this.id = options.id ?? `modal-${Math.random().toString(36).substring(2, 9)}`;
 		this.title = options.title;
 		this.submitText = options.submitText ?? "Hozzáadás";
 		this.cancelText = options.cancelText ?? "Mégse";
 		this.inputs = options.inputs;
 		this.footerInput = options.footerInput;
 		this.onSubmit = options.onSubmit;
-		this.onCancel =
-			options.onCancel ??
-			((): void => {
-				/* empty */
-			});
+		this.onCancel = options.onCancel ?? ((): void => { /* empty */ });
 
 		this.init();
 	}
 
 	private init(): void {
-		// Top-level modal backdrop (Flowbite layout pattern)
 		this.modalEl = document.createElement("div");
 		this.modalEl.id = this.id;
 		this.modalEl.setAttribute("tabindex", "-1");
 		this.modalEl.setAttribute("aria-hidden", "true");
-		this.modalEl.className =
-			"fixed top-0 right-0 left-0 z-50 hidden w-full h-full overflow-x-hidden overflow-y-auto md:inset-0 justify-center items-center bg-gray-900/50 dark:bg-gray-900/80";
+		this.modalEl.className = "fixed top-0 right-0 left-0 z-50 hidden w-full h-full overflow-x-hidden overflow-y-auto md:inset-0 justify-center items-center bg-gray-900/50 dark:bg-gray-900/80";
 
-		// Modal inner structure utilizing Flowbite utility tokens
 		this.modalEl.innerHTML = `
 			<div class="relative p-4 w-full max-w-4xl max-h-full">
 				<div class="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6">
@@ -394,96 +387,3 @@ export function confirmationModal(
 			});
 		});
 }
-
-export interface ModalFiels {
-	name: string;
-	label: string;
-	type: "text" | "number" | "select";
-	options?: Array<{ value: string; label: string }>;
-}
-
-// export function ModifyModal(
-// 	buttonMessage: string,
-// 	header: string,
-// 	fields: ModalFiels[],
-// 	initialData?: Record<string, unknown>,
-// 	onSubmit?: (data: Record<string, string>) => void,
-// ): void {
-// 	// const AfaSzamolas: Record<string, number> = {
-// 	// "PEK": 27,
-// 	// "KON": 27,
-// 	// "FAG": 27,
-// 	// "ITA": 27,
-// 	// "FUS": 27,
-// 	// "TEJ": 5,
-// 	// "FRI": 5,
-// 	// "EDS": 27,
-// 	// "SOS": 27,
-// 	// "HUS": 5
-// 	// };
-
-// 	const modaldiv = document.createElement("div");
-
-
-// 	const fieldsHtml = fields.map((field) => {
-// 		const value = String(initialData?.[field.name] !== undefined ? initialData[field.name] : "",);
-// 		if (field.type === "select") {
-// 			const optionsHtml = (field.options ?? []).map(
-// 				(opt) => `<option value="${opt.value}" ${opt.value === value ? "selected" : ""}>${opt.label}</option>`,
-// 			).join("");
-
-// 			`
-// 				<div class="col-span-2">
-// 					<label for="${field.name}" class="block mb-2.5 text-sm font-medium text-heading">
-// 						${field.label}
-// 					</label>
-// 					<select id="${field.name}" name="${field.name}" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-subtle text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
-// 						<option value="" disabled ${value === "" ? "selected" : ""}>Select...</option>
-// 						${optionsHtml}
-// 					</select>
-// 				</div>
-// 			`;
-// 		}
-// 		return `
-// 			<div class="relative z-0 w-full mb-5 group col-span-2">
-// 				<input
-// 				type="${field.type}"
-// 				name="${field.name}"
-// 				id="${field.name}"
-// 				value="${value}"
-// 				class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-subtle appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
-// 				placeholder=" "
-// 				required
-// 				/>
-// 				<label
-// 				for="${field.name}"
-// 				class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-// 				>
-// 				${field.label}
-// 				</label>
-// 			</div>
-// 		`;
-// 	})
-
-
-
-
-// 	modaldiv.querySelector("#modal-form")?.addEventListener("submit", (e) => {
-// 		e.preventDefault();
-
-// 		// Gather data simply
-// 		const formElement = e.currentTarget as HTMLFormElement;
-// 		const formDataInstance = new FormData(formElement);
-// 		const data: Record<string, string> = {};
-// 		formDataInstance.forEach((value, key) => {
-// 			data[key] = value.toString();
-// 		});
-
-// 		// closeModal();
-
-// 		if (onSubmit) {
-// 			onSubmit(data);
-// 		}
-// 		// TODO: új termék / szerkesztés
-// 	});
-// }

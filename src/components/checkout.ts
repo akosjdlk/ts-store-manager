@@ -40,7 +40,7 @@ async function main(filter: Record<string, string | null>): Promise<void> {
             products.at(Number(table.dataset["index"]))
 
         },
-        onCancel: (): void => {console.log("Modal closed/cancelled.")}
+        onCancel: (): void => { /** empty */ }
     });
 
     modal.open();

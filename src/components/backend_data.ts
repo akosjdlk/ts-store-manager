@@ -26,9 +26,9 @@ async function main(): Promise<void> {
     const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev): void => {
         const productIndex = products.findIndex((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
         const product = products[productIndex];
-        console.log(product);
-        const rowIndex = Number((ev.currentTarget as HTMLButtonElement)?.closest("tr")?.dataset["index"]);
-        const modal = new CustomModal({
+        const rowIndex = Number((ev.currentTarget as HTMLButtonElement | null)?.closest("tr")?.dataset["index"]);
+
+        new CustomModal({
             submitText: "Mentés",
             title: "Termék módosítása",
             inputs: [
@@ -52,8 +52,7 @@ async function main(): Promise<void> {
                 dt.update();
                 CreateToast("Termék módosítva", "success");
             }
-        });
-        modal.open();
+        }).open();
     });
 
 
