@@ -143,11 +143,11 @@ export class CustomModal {
 		});
 
 		if (this.footerInput) {
-			this.RenderTextInput(this.footerInput, footerInputsContainer);
+			this.RenderTextInput(this.footerInput, footerInputsContainer, true);
 		}
 	}
 
-	private RenderTextInput(config: TextInput, container: HTMLDivElement): void {
+	private RenderTextInput(config: TextInput, container: HTMLDivElement, isFooter = false): void {
 		const div = document.createElement("div");
 		div.className = "relative z-0 w-full mb-5 group col-span-2";
 
@@ -156,8 +156,12 @@ export class CustomModal {
 		input.name = config.id;
 		input.id = config.id;
 		input.placeholder = config.placeholder ?? "";
-		// input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className ?? ""}`;
-		input.className = `block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-subtle appearance-none focus:outline-none focus:ring-0 focus:border-brand peer ${config.className ?? ""}`;
+		if (isFooter) {
+			input.className = `rounded-xl dark:bg-gray-500 bg-gray-100 border-gray-300 dark:border-gray-600 mt-5 px-3 py-2 text-sm focus:ring-brand focus:border-brand ${config.className ?? ""}`;
+		}
+		else {
+			input.className = `block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-subtle appearance-none focus:outline-none focus:ring-0 focus:border-brand peer ${config.className ?? ""}`;
+		}
 		
 		if (config.attributes) {
 			Object.entries(config.attributes).forEach(([key, val]) => {
@@ -352,7 +356,6 @@ export function confirmationModal(
 					<span class="sr-only">Close modal</span>
 				</button>
 			<div class="p-4 md:p-5 text-center">
-				<svg class="mx-auto mb-4 text-fg-disabled w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
 				<h3 class="mb-6 text-body">${message}</h3>
 				<div class="flex items-center space-x-4 justify-center">
 					<button data-modal-hide="popup-modal" data-result="1" type="button" class="text-white bg-danger box-border border border-transparent hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
