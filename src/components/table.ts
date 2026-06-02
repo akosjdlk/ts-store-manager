@@ -3,8 +3,19 @@ import type { Sale } from "../types/sale";
 import type { Product } from "../types/product";
 import { deleteProduct } from "../api/products";
 import { deleteSale } from "../api/sales";
+import { confirmationModal } from "./modal";
+import { CreateToast } from "./toast";
 
-type Cell = string | number | boolean;
+interface Cell {
+    data: string;
+    text?: string;
+    order?: string | number;
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    attributes?: {
+        [key: string]: string;
+    };
+}
+
 type CellRow = Cell[];
 
 interface DataTableConfig {
@@ -24,11 +35,11 @@ function getValues<T extends { id: string }>(
 ): CellRow {
     const data: CellRow = [];
     keys.forEach((k) => {
-        data.push(input[k] as Cell);
+        data.push({data: input[k]} as Cell);
     });
 
     if (deleteButton || modifyButton) {
-        data.push(getActionButtons(input.id, deleteButton, modifyButton));
+        data.push({ data: getActionButtons(input.id, deleteButton, modifyButton) });
     }
 
     return data;
@@ -106,6 +117,9 @@ function getDatatable(table: HTMLTableElement, headings: string[], data: CellRow
             searchable: searchable,
             sortable: sortable,
             paging: paging,
+            columns: [
+                {select: headings.length - 1, sortable: false}
+            ]
         }
     );
 }
@@ -120,15 +134,31 @@ export function createDataTable<T extends { id: string }>(
     sortable = true,
     paging = false,
     deleteButton = true,
-    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null,
-    deleteButtonCallback: ((id: string) => Promise<void> | void) | null = null
-): void {
+    modifyButtonCallback: ((this: GlobalEventHandlers, ev: PointerEvent) => unknown) | null = null
+): DataTable {
     if (dataTables.has(configKey)) {
-        dataTables.get(configKey)?.dataTable.destroy();
-        dataTables.delete(configKey);
+        CreateToast("Ismeretlen hiba történt!", "danger");
+        throw new Error("This table already exists!");
     }
 
-    const mappedData = data.map(d => getValues(d, headers, deleteButton, modifyButtonCallback !== null));
+    // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
+    if (table === null) {
+        CreateToast("Ismeretlen hiba történt!", "danger");
+        throw new Error("Table is null.")
+    }
+
+    const mappedData = data.map(d =>
+        {
+            const cRow = getValues(d, headers, deleteButton, modifyButtonCallback !== null)
+            if (isProduct(d) && d.keszlet < 1) {
+                cRow.forEach(td => {
+                    td.attributes ??= {};
+                    td.attributes["class"] = `${td.attributes["class"] ?? ""} !text-red-800 bg-red-600/30 dark:!text-red-300 dark:bg-red-800/40`
+                })
+            }
+            return cRow
+        }
+    );
     const mappedHeadings = headers.map(h => h.replaceAll("_", "-"));
 
     if (deleteButton || modifyButtonCallback) {
@@ -146,6 +176,8 @@ export function createDataTable<T extends { id: string }>(
     const dt = getDatatable(table, mappedHeadings, mappedData, searchable, sortable, paging);
     dataTables.set(configKey, { dataTable: dt, storedData: mappedData });
 
+
+
     headers.forEach((h, index) => {
         if (!dropdownKeys[h]) {
             dt.columns.hide([index]);
@@ -155,29 +187,32 @@ export function createDataTable<T extends { id: string }>(
     if (deleteButton) {
         const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
         deleteButtons.forEach((btn) => {
-            // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-            btn.onclick = async () => {
-                const id = btn.dataset["id"] ?? null;
-                if (!id) {return;}
-
-                if (deleteButtonCallback !== null) {
-                    await deleteButtonCallback(id);
-                } else {
-                    const firstRow = data[0] as Product | Sale | undefined;
-                    if (firstRow && "cikkszam" in firstRow) {
-                        await deleteProduct(id);
-                    } else {
-                        await deleteSale(id);
-                    }
-                }
-
-                const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
-                if (isNaN(i)) {
-                    throw new Error("NO TR");
-                }
-                dt.data.data.splice(i, 1);
-                dataTables.get(configKey)?.storedData.splice(i, 1);
-                dt.update();
+            btn.onclick = (): void => {
+                confirmationModal(
+                    "Biztosan törli a terméket?", 
+                    async () => {
+                        CreateToast("Termék törölve", "danger");
+                        
+                        const id = btn.dataset["id"] ?? null;
+                        if (!id) {return;}
+        
+                        if (isProduct(data[0])) {
+                            await deleteProduct(id);
+                        } else {
+                            await deleteSale(id);
+                        }
+        
+                        const i = Number(btn.parentElement?.parentElement?.parentElement?.dataset["index"]);
+                        if (isNaN(i)) {
+                            CreateToast("Nem sikerült megtalálni a keresett adatsort", "warning");
+                            throw new Error("NO TR");
+                        }
+                        dt.data.data.splice(i, 1);
+                        dataTables.get(configKey)?.storedData.splice(i, 1);
+                        dt.update();
+                    },
+                    () => { /* empty */ }
+                );
             };
         });
     }
@@ -190,7 +225,7 @@ export function createDataTable<T extends { id: string }>(
     }
 
     if (!settingDropdowns || settingDropdowns.length === 0) {
-        return;
+        return dt;
     }
 
     settingDropdowns.forEach((sd, dropdownIndex) => {
@@ -248,4 +283,6 @@ export function createDataTable<T extends { id: string }>(
             });
         });
     });
+
+    return dt;
 }

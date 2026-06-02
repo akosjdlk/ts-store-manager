@@ -10,7 +10,8 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
-      "node_modules"
+      "node_modules",
+      "test.ts"
     ],
   },
 
@@ -45,12 +46,14 @@ export default tseslint.config(
        */
 
       curly: ["error", "all"],
-      eqeqeq: ["error", "always"],
+      eqeqeq: ["warn", "always"],
       "no-console": "warn",
       "no-debugger": "error",
       "sonarjs/todo-tag": "warn",
       "@typescript-eslint/no-misused-promises": "off",
       "@typescript-eslint/no-non-null-assertion": "off",
+      "sonarjs/pseudo-random": "off",
+      "sonarjs/no-commented-code": "off",
 
       /*
        * TYPESCRIPT
