@@ -26,6 +26,8 @@ async function main(): Promise<void> {
     const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev): void => {
         const productIndex = products.findIndex((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
         const product = products[productIndex];
+        console.log(product);
+        console.log(productIndex);
 
         new CustomModal({
             submitText: "Mentés",
@@ -43,16 +45,30 @@ async function main(): Promise<void> {
             onSubmit: async (data): Promise<void> => {
                 const validatedProduct = validateProductData(data);
 
+                const afaRates: Record<string, number> = {
+                    "PEK": 27,
+                    "KON": 27,
+                    "FAG": 27,
+                    "ITA": 27,
+                    "FUS": 27,
+                    "TEJ": 5,
+                    "FRI": 5,
+                    "EDS": 27,
+                    "SOS": 27,
+                    "HUS": 5
+                };
+
+                validatedProduct.afa = afaRates[validatedProduct.kategoria] || 0;
+                validatedProduct.brutto_ar = Math.round(validatedProduct.netto_ar * (1 + validatedProduct.afa / 100));
+
                 products[productIndex] = await updateProduct(validatedProduct.id, validatedProduct);
                 dt.rows.updateRow(productIndex, getValues(validatedProduct, headers, true, true))
 
-                dt.update();  // TODO: kell?
+                dt.update();
                 CreateToast("Termék módosítva", "success");
             }
         }).open();
     });
-
-
 
 
     const openModalHandler = (): void => {
@@ -69,11 +85,30 @@ async function main(): Promise<void> {
             ],
             footerInput: null,
             onSubmit: async (data): Promise<void> => {
+                console.log(String(data["id"]).substring(10))
                 data["cikkszam"] = "CK-" + String(data["id"]).substring(10);
                 const newProduct = validateProductData(data);
+
+                const afaRates: Record<string, number> = {
+                    "PEK": 27,
+                    "KON": 27,
+                    "FAG": 27,
+                    "ITA": 27,
+                    "FUS": 27,
+                    "TEJ": 5,
+                    "FRI": 5,
+                    "EDS": 27,
+                    "SOS": 27,
+                    "HUS": 5
+                };
+
+                newProduct.afa = afaRates[newProduct.kategoria] || 0;
+                newProduct.brutto_ar = Math.round(newProduct.netto_ar * (1 + newProduct.afa / 100));
+
                 await createProduct(newProduct);
 
                 dt.insert({data: [getValues(newProduct, headers, true, true)]});
+                products.push(newProduct);
                 dt.update();
                 CreateToast("Termék létrehozva", "success");
             }

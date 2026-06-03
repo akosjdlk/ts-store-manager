@@ -178,12 +178,12 @@ export function createDataTable<T extends Product | Sale | SaleEntry>(
     });
 
     if (deleteButton) {
-        const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
         dt.on("datatable.update", () => { addDeleteCallbacks(); });
         dt.on("datatable.page", () => { addDeleteCallbacks(); });
         addDeleteCallbacks();
-
+        
         function addDeleteCallbacks(): void {
+            const deleteButtons = table.querySelectorAll<HTMLButtonElement>(".delete-button");
             deleteButtons.forEach((btn) => {
                 btn.onclick = (): void => {
 

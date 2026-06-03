@@ -82,7 +82,14 @@ class CartManager {
             this.dataTable.rows.add(getValues(entry, ["id", "cikkszam", "termek_nev", "mennyiseg", "mertekegyseg", "osszeg"], true, true));
         }
 
-        this.SaveToLocalStorage(this.ReadDataFromTable());
+        const updatedData = this.ReadDataFromTable();
+
+        const totalDisplay = document.getElementById("total-price");
+        if (totalDisplay) {
+            totalDisplay.textContent = `${this.GetTotal(updatedData)}` + " Ft";
+        }
+
+        this.SaveToLocalStorage(updatedData);
     }
 
     public GetTotal(items?: SaleEntry[]): number {
@@ -135,15 +142,10 @@ class CartManager {
         };
 
         setTimeout(() => {
-            if (this.dataTable) {
-                this.dataTable.data.data = [];
-                this.dataTable.update();
-            }
+            this.dataTable.data.data = [];
+            this.dataTable.update();
 
             window.localStorage.removeItem(this.configKey);
-            window.localStorage.setItem(this.configKey, JSON.stringify([]));
-            window.localStorage.setItem("cartItems", JSON.stringify([]));
-
             const totalDisplay = document.getElementById("total-price");
             if (totalDisplay) {
                 totalDisplay.textContent = "0 Ft";
