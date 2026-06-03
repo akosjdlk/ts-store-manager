@@ -302,5 +302,15 @@ export function createDataTable<T extends Product | Sale | SaleEntry>(
         });
     });
 
+    if (configKey === "backend_data") {
+        dt.wrapperDOM.classList.add("table-wrapper-backend");
+        const originalUpdate = dt.update.bind(dt);
+
+        dt.update = function(): void {
+            originalUpdate(); 
+            dt.wrapperDOM.classList.add("table-wrapper-backend"); 
+        };
+    }
+
     return dt;
 }

@@ -131,3 +131,7 @@ th[data-sortable="true"]::after {
 .dark th[data-sortable="true"]::after {
   background-color: var(--color-gray-300) !important;
 }
+
+.table-wrapper-backend {
+  @apply !rounded-xl !ms-10 !mt-10 !me-10 !bg-gray-200/70 dark:!bg-gray-900 !p-5;
+}
