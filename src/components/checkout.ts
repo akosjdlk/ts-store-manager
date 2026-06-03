@@ -6,6 +6,7 @@ import type { SaleEntry } from "../types/sale_entry";
 import { type DataTable } from "simple-datatables";
 import { CreateToast } from "./toast";
 import { createSale, fetchAllSales } from "../api/sales";
+import "tailwindcss";
 
 const modalButtons = document.querySelectorAll<HTMLButtonElement>('[data-modal-category]');
 
@@ -286,6 +287,8 @@ function generateCheckoutTable(manager: CartManager): DataTable {
                             const updatedRowData = getValues(item, ["id", "cikkszam", "termek_nev", "mennyiseg", "mertekegyseg", "osszeg"], true, true);
 
                             manager.dataTable.rows.updateRow(rowToUpdate.index, updatedRowData);
+
+                            dataTable.update();
                         }
 
                         CreateToast("Termék sikeresen módosítva", "success");

@@ -4,6 +4,7 @@ import type { Product } from "../types/product";
 import { CustomModal } from "./modal";
 import { CreateToast } from "./toast";
 import "flowbite";
+import "tailwindcss"
 
 async function main(): Promise<void> {
     const desktopBtn = document.getElementById("add-product-btn-desktop");
@@ -26,8 +27,6 @@ async function main(): Promise<void> {
     const dt = createDataTable("backend_data", table, products, headers, [dropdown, dropdown_mobile], true, true, true, true, (ev): void => {
         const productIndex = products.findIndex((prod) => prod.id === (ev.currentTarget as HTMLButtonElement).dataset["id"]);
         const product = products[productIndex];
-        console.log(product);
-        console.log(productIndex);
 
         new CustomModal({
             submitText: "Mentés",
@@ -58,7 +57,7 @@ async function main(): Promise<void> {
                     "HUS": 5
                 };
 
-                validatedProduct.afa = afaRates[validatedProduct.kategoria] || 0;
+                validatedProduct.afa = afaRates[validatedProduct.kategoria] ?? 0;
                 validatedProduct.brutto_ar = Math.round(validatedProduct.netto_ar * (1 + validatedProduct.afa / 100));
 
                 products[productIndex] = await updateProduct(validatedProduct.id, validatedProduct);
@@ -102,7 +101,7 @@ async function main(): Promise<void> {
                     "HUS": 5
                 };
 
-                newProduct.afa = afaRates[newProduct.kategoria] || 0;
+                newProduct.afa = afaRates[newProduct.kategoria] ?? 0;
                 newProduct.brutto_ar = Math.round(newProduct.netto_ar * (1 + newProduct.afa / 100));
 
                 await createProduct(newProduct);
