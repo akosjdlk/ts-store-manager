@@ -124,6 +124,10 @@ class CartManager {
 
     public async GenerateSale(): Promise<Sale> {
         const items = this.ReadDataFromTable();
+        if (items.length === 0) {
+            CreateToast("Nincs termék a kosárban", "warning");
+            throw new Error("Nincs termék a kosárban");
+        }
         const sales = await fetchAllSales();
         const totalAmount = this.GetTotal(items);
 
@@ -261,7 +265,6 @@ function generateCheckoutTable(manager: CartManager): DataTable {
     
                     if (isNaN(ujMennyiseg) || ujMennyiseg <= 0) {
                         CreateToast("Kérjük, adjon meg egy érvényes mennyiséget!", "warning");
-                        alert("Kérjük, adjon meg egy érvényes mennyiséget!");
                         return;
                     }
 
