@@ -1,104 +1,173 @@
-import { initFlowbite } from 'flowbite'
+import { initFlowbite } from 'flowbite';
+import type { DataTable } from 'simple-datatables';
 
 import { fetchProductById, updateProduct } from '../api/products';
-
-import { createDataTable } from "./table";
-
-
-initFlowbite()
-
-const stockupSubmitBtn = document.getElementById('stockup_submit_btn') as HTMLButtonElement
-const add_stockup_form = document.getElementById('add_stockup_form') as HTMLFormElement
-const confirmStockupBtn = document.getElementById('confirmstockupbtn') as HTMLButtonElement;
+import type { SaleEntry } from '../types/sale_entry';
+import { createDataTable, getValues } from './table';
+import { CreateToast } from './toast';
 
 interface StockupRow {
-    id: string,
-    termek_vonalkod: string,
-    jelenlegi_keszlet: number,
-    bevetelezett_db: number,
-    varhato_keszlet: number
+    id: string;
+    termek_vonalkod: string;
+    jelenlegi_keszlet: number;
+    bevetelezett_db: number;
+    varhato_keszlet: number;
 }
 
-const STOCKUP_STORAGE_KEY = 'editedProducts';
-const STOCKUP_HEADERS: Array<keyof StockupRow> = ['termek_vonalkod', 'jelenlegi_keszlet', 'bevetelezett_db', 'varhato_keszlet'];
+type StockupTableRow = StockupRow & SaleEntry & {
+    muveletek: string;
+};
 
-function createRowId(): string {
-    return crypto.randomUUID();
-}
+const STORAGE_KEY = 'editedProducts';
+const HEADERS: Array<keyof StockupTableRow & string> = [
+    'termek_vonalkod',
+    'jelenlegi_keszlet',
+    'bevetelezett_db',
+    'varhato_keszlet',
+    'muveletek',
+];
 
-function toNumber(value: unknown): number {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : 0;
-}
+initFlowbite();
 
-function getStoredRows(): StockupRow[] {
-    const rawRows = localStorage.getItem(STOCKUP_STORAGE_KEY);
-    if (!rawRows) {
-        return [];
-    }
+const table = document.querySelector<HTMLTableElement>('table');
+const form = document.getElementById('add_stockup_form') as HTMLFormElement;
+const submitBtn = document.getElementById('stockup_submit_btn') as HTMLButtonElement;
+const confirmBtn = document.getElementById('confirmstockupbtn') as HTMLButtonElement;
 
-    return JSON.parse(rawRows) as StockupRow[];
+let dataTable: DataTable | null = null;
+
+function loadRows(): StockupRow[] {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]') as StockupRow[];
 }
 
 function saveRows(rows: StockupRow[]): void {
-    localStorage.setItem(STOCKUP_STORAGE_KEY, JSON.stringify(rows));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
 }
 
-function renderTable(): void {
-    const rows = getStoredRows();
-    const table = document.querySelector('table')!;
-    const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown')!;
-    const dropdownMobile = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile')!;
+function getNumber(inputId: string): number {
+    const value = Number((document.getElementById(inputId) as HTMLInputElement).value);
+    return Number.isFinite(value) ? value : 0;
+}
 
-    createDataTable("stockup", table, rows, STOCKUP_HEADERS, [dropdown, dropdownMobile], true, true, true, true, null, (id) => {
-        const filteredRows = rows.filter((row) => row.id !== id);
-        saveRows(filteredRows);
+function getDeleteButton(id: string): string {
+    return `
+        <button data-id="${id}" class="stockup-delete-button text-red-500 size-8 flex justify-center items-center rounded-xl transition hover:scale-105 duration-300 ease-in-out hover:text-red-700" type="button" aria-label="Sor törlése">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="size-6 lucide lucide-trash2-icon lucide-trash-2">
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                <path d="M3 6h18" />
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+        </button>
+    `;
+}
+
+function toTableRow(row: StockupRow): StockupTableRow {
+    return {
+        ...row,
+        cikkszam: row.termek_vonalkod,
+        termek_nev: row.termek_vonalkod,
+        mertekegyseg: 'db',
+        mennyiseg: row.bevetelezett_db,
+        osszeg: row.varhato_keszlet,
+        muveletek: getDeleteButton(row.id),
+    };
+}
+
+function updateTableRow(row: StockupRow): void {
+    dataTable?.rows.add(getValues(toTableRow(row), HEADERS, false, false));
+    dataTable?.update();
+}
+
+function clearTable(): void {
+    if (!dataTable) {
+        return;
+    }
+
+    dataTable.data.data = [];
+    dataTable.update();
+}
+
+function initTable(): void {
+    if (!table) {
+        return;
+    }
+
+    const dropdowns = [
+        document.querySelector<HTMLUListElement>('#backend_data_table_dropdown'),
+        document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile'),
+    ].filter((dropdown): dropdown is HTMLUListElement => dropdown !== null);
+
+    dataTable = createDataTable(
+        'stockup',
+        table,
+        loadRows().map(toTableRow),
+        HEADERS,
+        dropdowns,
+        true,
+        true,
+        true,
+        false,
+    );
+
+    table.addEventListener('click', (event) => {
+        const deleteBtn = (event.target as HTMLElement).closest<HTMLButtonElement>('.stockup-delete-button');
+        if (!deleteBtn?.dataset['id']) {
+            return;
+        }
+
+        saveRows(loadRows().filter((row) => row.id !== deleteBtn.dataset['id']));
+
+        const rowIndex = Number(deleteBtn.closest('tr')?.dataset['index']);
+        if (!Number.isNaN(rowIndex)) {
+            dataTable?.rows.remove(rowIndex);
+            dataTable?.update();
+        }
+
+        CreateToast('Sor törölve', 'success');
     });
 }
 
-stockupSubmitBtn.addEventListener('click', async () => {
+submitBtn.addEventListener('click', async () => {
     const productBarcode = (document.getElementById('barcode') as HTMLInputElement).value.trim();
-    const addToProductQuantity = toNumber((document.getElementById('quantity') as HTMLInputElement).value);
+    const quantity = getNumber('quantity');
 
-    if (!productBarcode || addToProductQuantity <= 0) {
+    if (!productBarcode || quantity <= 0) {
         return;
     }
 
     const product = await fetchProductById(productBarcode);
+    const row: StockupRow = {
+        id: crypto.randomUUID(),
+        termek_vonalkod: productBarcode,
+        jelenlegi_keszlet: product.keszlet,
+        bevetelezett_db: quantity,
+        varhato_keszlet: product.keszlet + quantity,
+    };
 
-    const storedRows = getStoredRows();
-    const nextRows = [
-        ...storedRows,
-        {
-            id: createRowId(),
-            termek_vonalkod: productBarcode,
-            jelenlegi_keszlet: product.keszlet,
-            bevetelezett_db: addToProductQuantity,
-            varhato_keszlet: product.keszlet + addToProductQuantity
-        }
-    ];
-
-    saveRows(nextRows);
-
-    add_stockup_form.reset();
-    renderTable();
+    saveRows(loadRows().concat(row));
+    updateTableRow(row);
+    form.reset();
 });
 
-confirmStockupBtn.addEventListener('click', async () => {
-    const productsToUpdate = getStoredRows();
-    if (productsToUpdate.length === 0) {
+confirmBtn.addEventListener('click', async () => {
+    const rows = loadRows();
+    if (rows.length === 0) {
         return;
     }
 
-    for (const product of productsToUpdate) {
-        const productDetails = await fetchProductById(product.termek_vonalkod);
-        productDetails.keszlet += product.bevetelezett_db;
-
-        await updateProduct(product.termek_vonalkod, productDetails);
+    for (const row of rows) {
+        const product = await fetchProductById(row.termek_vonalkod);
+        product.keszlet += row.bevetelezett_db;
+        await updateProduct(row.termek_vonalkod, product);
     }
 
     saveRows([]);
-    renderTable();
+    clearTable();
+    CreateToast('Bevételezés véglegesítve', 'success');
 });
 
-renderTable();
+initTable();
