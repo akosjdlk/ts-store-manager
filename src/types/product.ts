@@ -12,6 +12,9 @@ export interface Product {
 }
 
 export function isProduct(p: unknown): p is Product {
+  if (p === undefined || p === null) {
+    return false;
+  }
   const prod = (p as Product)
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison
   return prod.cikkszam !== undefined && prod.keszlet !== undefined;
