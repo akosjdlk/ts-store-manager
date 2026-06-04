@@ -1,6 +1,6 @@
 import { createDataTable, getValues, type CellRow } from "./table";
 import { confirmationModal, CustomModal } from "./modal";
-import { fetchFilteredProducts } from "../api/products";
+import { fetchFilteredProducts, fetchProductById, updateProduct } from "../api/products";
 import type { Sale } from "../types/sale";
 import type { SaleEntry } from "../types/sale_entry";
 import { type DataTable } from "simple-datatables";
@@ -59,7 +59,17 @@ class CartManager {
         window.localStorage.setItem(this.configKey, value);
     }
 
-    public AddProduct(entry: SaleEntry): void {
+    public async AddProduct(entry: SaleEntry): Promise<void> {
+        const prod = await fetchProductById(entry.id);
+        if (prod) {
+            if (prod.keszlet < entry.mennyiseg) {
+                CreateToast(`A ${prod.termek_nev} termékből nincs elegendő készlet!`, "danger");
+                throw new Error(`A ${prod.termek_nev} termékből nincs elegendő készlet!`);
+            }
+        } else {
+            CreateToast(`A ${entry.id} azonosítójú termék nem található!`, "danger");
+            throw new Error(`A ${entry.id} azonosítójú termék nem található!`);
+        }
 
         const exists = this.dataTable.rows.findRow(0, entry.id)
         if (exists.index !== -1) {
@@ -146,6 +156,13 @@ class CartManager {
             bruttoOsszeg: totalAmount
         };
 
+        sale.products.forEach(async (p) => {
+            const prod = await fetchProductById(p.productId);
+            prod.keszlet -= p.quantity;
+            await updateProduct(prod.id!, prod);
+        })
+
+
         setTimeout(() => {
             this.dataTable.data.data = [];
             this.dataTable.update();
@@ -195,7 +212,7 @@ async function generateFilterModal(filter: Record<string, string | null>): Promi
             id: "number",
             type: "number"
         },
-        onSubmit: (data: Record<string, unknown>): void => {
+        onSubmit: async (data: Record<string, unknown>): Promise<void> => {
             if (!data["table"]) {
                 alert("Nincs kiválaszott sor")
                 return;
@@ -208,7 +225,7 @@ async function generateFilterModal(filter: Record<string, string | null>): Promi
             const selectedProduct = products.at(Number(table.dataset["index"]));
 
             if (selectedProduct) {
-                cartManager.AddProduct({
+                await cartManager.AddProduct({
                     id: selectedProduct.id,
                     cikkszam: selectedProduct.cikkszam,
                     termek_nev: selectedProduct.termek_nev,
