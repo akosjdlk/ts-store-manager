@@ -96,17 +96,14 @@ function initTable(): void {
         return;
     }
 
-    const dropdowns = [
-        document.querySelector<HTMLUListElement>('#backend_data_table_dropdown'),
-        document.querySelector<HTMLUListElement>('#backend_data_table_dropdown_mobile'),
-    ].filter((dropdown): dropdown is HTMLUListElement => dropdown !== null);
+    const dropdown = document.querySelector<HTMLUListElement>('#backend_data_table_dropdown');
 
     dataTable = createDataTable(
         'stockup',
         table,
         loadRows().map(toTableRow),
         HEADERS,
-        dropdowns,
+        dropdown ? [dropdown] : null,
         true,
         true,
         true,

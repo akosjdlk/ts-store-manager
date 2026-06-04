@@ -38,8 +38,6 @@ async function renderTable(): Promise<void> {
     }
 
     const dropdown = document.querySelector<HTMLUListElement>("#backend_data_table_dropdown");
-    const dropdownMobile = document.querySelector<HTMLUListElement>("#backend_data_table_dropdown_mobile");
-    const dropdowns = [dropdown, dropdownMobile].filter((element): element is HTMLUListElement => element !== null);
 
     const sales = formatSales(await fetchAllSales());
 
@@ -48,7 +46,7 @@ async function renderTable(): Promise<void> {
         table,
         sales,
         SALES_HEADERS,
-        dropdowns,
+        dropdown ? [dropdown] : null,
         true,
         true,
         true,
