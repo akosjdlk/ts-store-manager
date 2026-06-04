@@ -10,7 +10,8 @@
     "migrate-db-unix": "cp db.json db.local.json",
     "json-server": "npx json-server db.local.json --port 8080 --host 0.0.0.0",
     "vite": "vite --port 8000 --host",
-    "build": "tsc && vite build",
+    "deploy": "npm run migrate-db && npm run dev",
+    "deploy-unix": "npm run migrate-db-unix && npm run dev",
     "lint": "npx eslint . --fix --config eslint.config.js"
   },
   "devDependencies": {
