@@ -200,7 +200,7 @@ async function generateFilterModal(filter: Record<string, string | null>): Promi
     const dt = createDataTable(egyediTableId, table, products, ["id", "termek_nev", "brutto_ar", "mertekegyseg"], null, true, true, true, false, null);
     dt.wrapperDOM.classList.add("!h-158")
     const modal = new CustomModal({
-        title: "Test Modal",
+        title: "Termék hozzáadás",
         inputs: [
             {
                 type: "table",
